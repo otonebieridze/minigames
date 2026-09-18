@@ -1,0 +1,15 @@
+@use 'tokens' as *;
+@use 'breakpoints' as *;
+@use 'mixins' as *;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-family-inter;
+  background-color: $color-bg;
+  color: $color-on-bg;
+}
