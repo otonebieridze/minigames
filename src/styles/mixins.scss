@@ -31,6 +31,12 @@
   }
 }
 
+@mixin wide-up {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+
 @mixin container {
   width: 100%;
   max-width: $breakpoint-desktop;
