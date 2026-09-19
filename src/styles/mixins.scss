@@ -17,9 +17,13 @@
   width: 100%;
   max-width: $breakpoint-desktop;
   margin-inline: auto;
-  padding-inline: $size-4;
+  padding-inline: $size-2;
 
   @include tablet-up {
-    padding-inline: $size-6;
+    padding-inline: $size-5;
+  }
+
+  @include desktop-up {
+    padding-inline: $size-10;
   }
 }
