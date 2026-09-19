@@ -1,0 +1,166 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.game-dev {
+  width: 100%;
+  max-width: $breakpoint-desktop;
+  margin-inline: auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $size-2;
+  padding: $size-2;
+
+  @include tablet-up {
+    gap: $size-3;
+    padding-inline: $size-5;
+    padding-block: $size-3;
+  }
+
+  @include wide-up {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  @include desktop-up {
+    gap: $size-5;
+    padding-inline: $size-15;
+    padding-block: $size-5;
+  }
+}
+
+.game-dev__illustration {
+  width: 100%;
+  height: 227px;
+  overflow: hidden;
+  border-radius: $corner-extra-large;
+
+  @include tablet-up {
+    height: 300px;
+  }
+
+  @include wide-up {
+    flex: 1 0 0;
+    height: auto;
+    aspect-ratio: 680 / 480;
+    max-width: 680px;
+  }
+
+  @include desktop-up {
+    flex: 0 0 680px;
+    width: 680px;
+    height: 480px;
+    aspect-ratio: auto;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.game-dev__card {
+  position: relative;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $size-2;
+  padding: $size-3;
+
+  background-color: $color-white;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-extra-large;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 14px 15px rgba(0, 0, 0, 0.08);
+
+  @include tablet-up {
+    padding: $size-4;
+  }
+
+  @include wide-up {
+    flex: 1 0 0;
+  }
+
+  @include desktop-up {
+    gap: $size-3;
+    padding: $size-5;
+  }
+}
+
+.game-dev__title {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+  line-height: 1.2;
+  font-size: $font-size-headline-medium;
+
+  @include desktop-up {
+    font-size: $font-size-headline-large;
+  }
+}
+
+.game-dev__text {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  color: $color-on-bg;
+  line-height: 1.5;
+  font-size: $font-size-label-medium;
+
+  @include tablet-up {
+    font-size: $font-size-body-small;
+  }
+
+  @include desktop-up {
+    font-size: $font-size-body-large;
+  }
+}
+
+.game-dev__button {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+
+  background-color: $color-primary;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-medium;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+  padding: $btn-small-padding;
+  color: $color-on-primary;
+  font-family: $font-family-roboto;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-label-medium;
+
+  @include tablet-up {
+    padding: $btn-medium-padding;
+    font-size: $font-size-body-small;
+  }
+
+  @include desktop-up {
+    padding: $btn-large-padding;
+    font-size: $font-size-body-large;
+  }
+
+  &:hover {
+    background-color: $color-primary-high;
+  }
+}
+
+.game-dev__contact {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  color: $color-on-bg-low;
+  font-size: $font-size-label-medium;
+
+  @include desktop-up {
+    font-size: $font-size-body-small;
+  }
+}
