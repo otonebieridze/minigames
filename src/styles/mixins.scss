@@ -25,6 +25,12 @@
   }
 }
 
+@mixin above-mobile {
+  @media (min-width: #{$breakpoint-mobile + 1px}) {
+    @content;
+  }
+}
+
 @mixin container {
   width: 100%;
   max-width: $breakpoint-desktop;
