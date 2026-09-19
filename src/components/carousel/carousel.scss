@@ -1,0 +1,237 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.carousel {
+  width: 100%;
+  max-width: $breakpoint-desktop;
+  margin-inline: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  padding: $size-2;
+
+  @include tablet-up {
+    gap: $size-3;
+    padding-inline: $size-5;
+    padding-block: $size-3;
+  }
+
+  @include desktop-up {
+    gap: $size-5;
+    padding-inline: $size-15;
+    padding-block: $size-5;
+  }
+}
+
+.carousel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.carousel__title-group {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+}
+
+.carousel__accent-bar {
+  display: block;
+  width: 8px;
+  height: 24px;
+
+  background-color: $color-primary;
+  border: 1.5px solid $color-on-primary;
+  border-radius: $corner-extra-small;
+
+  @include desktop-up {
+    height: 32px;
+  }
+}
+
+.carousel__title {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+  font-size: $font-size-headline-medium;
+
+  @include desktop-up {
+    font-size: $font-size-headline-large;
+  }
+}
+
+.carousel__nav {
+  display: none;
+  gap: $size-2;
+
+  @include above-mobile {
+    display: flex;
+  }
+}
+
+.carousel__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-full;
+  background-color: $color-white;
+  cursor: pointer;
+
+  img {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  @include desktop-up {
+    width: 48px;
+    height: 48px;
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &:hover {
+    background-color: $color-primary;
+  }
+}
+
+.carousel__track {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-1;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+
+  padding-inline: $size-05;
+
+  @include tablet-up {
+    padding-inline: $size-1;
+  }
+}
+
+.carousel__card {
+  position: relative;
+  container-type: inline-size;
+  min-width: 0;
+  overflow: hidden;
+
+  flex: 0 1 18%;
+  height: 200px;
+
+  background-color: $color-white;
+  border: 2.5px solid $color-on-primary;
+  border-radius: $corner-large;
+  box-shadow: $shadow-level-1;
+
+  @include tablet-up {
+    flex-basis: 13.75%;
+    height: 280px;
+  }
+
+  @include desktop-up {
+    height: 384px;
+    border-radius: $corner-extra-large;
+  }
+
+  &--featured {
+    flex-basis: 64%;
+
+    @include tablet-up {
+      flex-basis: 45%;
+    }
+  }
+
+  &--edge {
+    display: none;
+
+    @include tablet-up {
+      display: block;
+    }
+  }
+}
+
+.carousel__card-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel__overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  min-height: 56px;
+  display: flex;
+  align-items: flex-end;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 17.308%, rgba(0, 0, 0, 0.85) 46.154%);
+}
+
+.carousel__overlay-content {
+  display: none;
+  flex-direction: column;
+  gap: $size-1;
+  width: 100%;
+  padding: $size-2;
+
+  @container (min-width: 288px) {
+    display: flex;
+  }
+}
+
+.carousel__card-title {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  font-size: $font-size-label-medium;
+
+  @include tablet-up {
+    font-size: $font-size-body-small;
+  }
+
+  @include desktop-up {
+    font-size: $font-size-body-large;
+  }
+}
+
+.carousel__card-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.carousel__stat {
+  display: flex;
+  align-items: center;
+  gap: $size-05;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  font-size: $font-size-label-medium;
+
+  @include tablet-up {
+    font-size: $font-size-body-small;
+  }
+
+  @include desktop-up {
+    font-size: $font-size-body-medium;
+  }
+}
+
+.carousel__stat-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
