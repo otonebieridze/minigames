@@ -1,9 +1,14 @@
 import './mobile-nav.scss';
 import logoIcon from '../../assets/icons/logo.png';
 
-let navElement: HTMLElement | null = null;
+interface MobileNav {
+  element: HTMLElement;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+}
 
-export function renderMobileNav(): HTMLElement {
+export function createMobileNav(): MobileNav {
   const nav = document.createElement('div');
   nav.className = 'mobile-nav';
   nav.setAttribute('role', 'dialog');
@@ -31,27 +36,28 @@ export function renderMobileNav(): HTMLElement {
     </div>
   `;
 
-  const closeButton = nav.querySelector<HTMLButtonElement>('.mobile-nav__close')!;
-  closeButton.addEventListener('click', closeMobileNav);
+  function open(): void {
+    nav.classList.add('mobile-nav--open');
+  }
+
+  function close(): void {
+    nav.classList.remove('mobile-nav--open');
+  }
+
+  function toggle(): void {
+    nav.classList.toggle('mobile-nav--open');
+  }
+
+  const closeButton = nav.querySelector<HTMLButtonElement>('.mobile-nav__close');
+  if (closeButton) {
+    closeButton.addEventListener('click', close);
+  }
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
-      closeMobileNav();
+      close();
     }
   });
 
-  navElement = nav;
-  return nav;
-}
-
-export function openMobileNav(): void {
-  navElement?.classList.add('mobile-nav--open');
-}
-
-export function closeMobileNav(): void {
-  navElement?.classList.remove('mobile-nav--open');
-}
-
-export function toggleMobileNav(): void {
-  navElement?.classList.toggle('mobile-nav--open');
+  return { element: nav, open, close, toggle };
 }

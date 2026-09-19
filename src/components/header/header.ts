@@ -1,7 +1,7 @@
 import './header.scss';
 import logoIcon from '../../assets/icons/logo.png';
 import hamburgerIcon from '../../assets/icons/hamburger.png';
-import { renderMobileNav, toggleMobileNav } from '../mobile-nav/mobile-nav';
+import { createMobileNav } from '../mobile-nav/mobile-nav';
 
 export function renderHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -33,13 +33,14 @@ export function renderHeader(): HTMLElement {
     </div>
   `;
 
-  const burgerButton = header.querySelector<HTMLButtonElement>('.header__burger')!;
-  burgerButton.addEventListener('click', () => {
-    toggleMobileNav();
-  });
+  const mobileNav = createMobileNav();
+  document.body.append(mobileNav.element);
 
-  if (!document.querySelector('.mobile-nav')) {
-    document.body.append(renderMobileNav());
+  const burgerButton = header.querySelector<HTMLButtonElement>('.header__burger');
+  if (burgerButton) {
+    burgerButton.addEventListener('click', () => {
+      mobileNav.toggle();
+    });
   }
 
   return header;
