@@ -84,7 +84,7 @@ export function renderCarousel(): HTMLElement {
     </div>
 
     <ul class="carousel__track">
-      ${games.map(renderCard).join('')}
+      ${games.map((game) => renderCard(game)).join('')}
     </ul>
   `;
 
