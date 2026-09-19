@@ -1,0 +1,197 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.footer {
+  width: 100%;
+  background-color: $color-bg-footer;
+
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
+
+  @include tablet-up {
+    gap: $size-4;
+  }
+
+  @include desktop-up {
+    gap: $size-8;
+  }
+
+  > * {
+    width: 100%;
+    max-width: $breakpoint-desktop;
+    margin-inline: auto;
+    padding-inline: $size-2;
+
+    @include tablet-up {
+      padding-inline: $size-5;
+    }
+
+    @include desktop-up {
+      padding-inline: $size-15;
+    }
+  }
+
+  padding-block: $size-3;
+
+  @include tablet-up {
+    padding-block: $size-4;
+  }
+
+  @include desktop-up {
+    padding-block: $size-5;
+  }
+}
+
+.footer__top {
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
+
+  @include tablet-up {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.footer__brand {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
+
+  @include desktop-up {
+    max-width: 400px;
+  }
+}
+
+.footer__logo {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+  text-decoration: none;
+  color: $color-white;
+
+  span {
+    font-family: $font-family-inter;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-headline-medium;
+  }
+}
+
+.footer__tagline {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  color: $color-on-bg-footer;
+  font-size: $font-size-body-small;
+  line-height: 1.5;
+}
+
+.footer__nav-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $size-3;
+  width: 100%;
+
+  @include desktop-up {
+    flex-wrap: nowrap;
+    gap: $size-10;
+    width: auto;
+  }
+}
+
+.footer__col {
+  flex: 1 1 100px;
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+}
+
+.footer__community {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+
+  @include tablet-up {
+    flex: 1 1 100px;
+  }
+}
+
+.footer__heading {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  font-size: $font-size-body-medium;
+}
+
+.footer__link {
+  display: block;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  color: $color-on-bg-footer;
+  font-size: $font-size-body-small;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-white;
+  }
+}
+
+.footer__social {
+  display: flex;
+  gap: $size-2;
+}
+
+.footer__social-link img {
+  display: block;
+}
+
+.footer__divider {
+  border: none;
+  border-top: 1px solid $color-bg-footer-low;
+  margin: 0;
+}
+
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-2 $size-4;
+}
+
+.footer__copyright {
+  font-family: $font-family-inter;
+  color: $color-on-bg-footer;
+  font-size: $font-size-body-small;
+}
+
+.footer__credit-link {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+  text-decoration: none;
+  color: $color-on-bg-footer;
+  font-family: $font-family-inter;
+  font-size: $font-size-body-small;
+  white-space: nowrap;
+
+  &:hover {
+    color: $color-white;
+  }
+}
+
+.footer__made-with-love {
+  display: none;
+  font-family: $font-family-inter;
+  color: $color-on-bg-footer;
+  font-size: $font-size-body-small;
+  white-space: nowrap;
+
+  @include tablet-up {
+    display: block;
+  }
+}
