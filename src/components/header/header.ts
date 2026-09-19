@@ -1,6 +1,7 @@
 import './header.scss';
 import logoIcon from '../../assets/icons/logo.png';
 import hamburgerIcon from '../../assets/icons/hamburger.png';
+import { createMobileNav } from '../mobile-nav/mobile-nav';
 
 export function renderHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -31,6 +32,16 @@ export function renderHeader(): HTMLElement {
       </div>
     </div>
   `;
+
+  const mobileNav = createMobileNav();
+  document.body.append(mobileNav.element);
+
+  const burgerButton = header.querySelector<HTMLButtonElement>('.header__burger');
+  if (burgerButton) {
+    burgerButton.addEventListener('click', () => {
+      mobileNav.toggle();
+    });
+  }
 
   return header;
 }

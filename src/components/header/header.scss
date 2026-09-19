@@ -17,8 +17,13 @@
 
   padding-block: $size-2;
 
+  @include nav-desktop-up {
+    padding-inline: $size-2;
+  }
+
   @include desktop-up {
     padding-block: $size-3;
+    padding-inline: $size-10;
   }
 }
 
@@ -28,17 +33,20 @@
   gap: $size-1;
   text-decoration: none;
   color: $color-on-primary;
+  flex-shrink: 0;
 }
 
 .header__logo-icon {
   width: $size-4;
   height: $size-4;
+  flex-shrink: 0;
 }
 
 .header__logo-text {
   font-family: $font-family-inter;
   font-weight: $font-weight-bold;
   font-size: $font-size-headline-small;
+  white-space: nowrap;
 
   @include desktop-up {
     font-size: $font-size-headline-medium;
@@ -48,14 +56,22 @@
 .header__right {
   display: flex;
   align-items: center;
-  gap: $size-4;
+  gap: $size-2;
+
+  @include desktop-up {
+    gap: $size-4;
+  }
 }
 
 .header__nav {
   display: none;
 
-  @include desktop-up {
+  @include nav-desktop-up {
     display: flex;
+    gap: $size-2;
+  }
+
+  @include desktop-up {
     gap: $size-5;
   }
 }
@@ -67,6 +83,7 @@
   color: $color-on-bg;
   text-decoration: none;
   cursor: pointer;
+  white-space: nowrap;
 
   &:hover {
     color: $color-on-primary;
@@ -82,16 +99,17 @@
   display: flex;
   align-items: center;
   gap: $size-2;
+  flex-shrink: 0;
 }
 
 .header__login-btn {
   display: none;
 
-  @include desktop-up {
+  @include nav-desktop-up {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: $btn-medium-padding;
+    padding: $btn-small-padding;
     border: 2px solid $color-on-primary;
     border-radius: $corner-small;
     background: transparent;
@@ -99,18 +117,23 @@
     font-family: $font-family-inter;
     font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
+    white-space: nowrap;
     cursor: pointer;
 
     &:hover {
       background-color: $color-surface;
     }
   }
+
+  @include desktop-up {
+    padding: $btn-medium-padding;
+  }
 }
 
 .header__signup-btn {
   display: none;
 
-  @include tablet-up {
+  @include mobile-up {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -122,6 +145,7 @@
     font-family: $font-family-inter;
     font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
+    white-space: nowrap;
     cursor: pointer;
 
     &:hover {
@@ -144,6 +168,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
+  flex-shrink: 0;
 
   img {
     display: block;
@@ -151,7 +176,7 @@
     height: 100%;
   }
 
-  @include desktop-up {
+  @include nav-desktop-up {
     display: none;
   }
 }
