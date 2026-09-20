@@ -1,4 +1,9 @@
 import './auth-dialog.scss';
+import mailIcon from '../../assets/icons/mail.png';
+import lockIcon from '../../assets/icons/lock.png';
+import personIcon from '../../assets/icons/person.png';
+import visibilityIcon from '../../assets/icons/visibility.png';
+import googleIcon from '../../assets/icons/google.png';
 
 interface AuthDialog {
   element: HTMLElement;
@@ -32,18 +37,38 @@ export function createAuthDialog(): AuthDialog {
         <form class="auth-dialog__form">
           <label class="auth-dialog__label">
             Email Address
-            <input type="email" class="auth-dialog__input" placeholder="e.g. alex@minigames.com" />
+            <span class="auth-dialog__input-wrap">
+              <img src="${mailIcon}" alt="" class="auth-dialog__input-icon" />
+              <input type="email" required class="auth-dialog__input" placeholder="e.g. alex@minigames.com" />
+            </span>
           </label>
+
           <label class="auth-dialog__label">
             Password
-            <input type="password" class="auth-dialog__input" placeholder="••••••••" />
+            <span class="auth-dialog__input-wrap">
+              <img src="${lockIcon}" alt="" class="auth-dialog__input-icon" />
+              <input
+                type="password"
+                required
+                minlength="8"
+                class="auth-dialog__input auth-dialog__input--has-toggle"
+                placeholder="••••••••"
+              />
+              <button type="button" class="auth-dialog__toggle-visibility" aria-label="Show password">
+                <img src="${visibilityIcon}" alt="" />
+              </button>
+            </span>
           </label>
+
           <a href="#/" class="auth-dialog__forgot">Forgot Password?</a>
           <button type="submit" class="auth-dialog__submit">Login</button>
         </form>
 
         <div class="auth-dialog__divider"><span>OR</span></div>
-        <button type="button" class="auth-dialog__google">Continue with Google</button>
+        <button type="button" class="auth-dialog__google">
+          <img src="${googleIcon}" alt="" width="20" height="20" />
+          Continue with Google
+        </button>
 
         <p class="auth-dialog__switch-text">
           Don't have an account?
@@ -58,25 +83,62 @@ export function createAuthDialog(): AuthDialog {
         <form class="auth-dialog__form">
           <label class="auth-dialog__label">
             Username
-            <input type="text" class="auth-dialog__input" placeholder="e.g. CozyGamer_99" />
+            <span class="auth-dialog__input-wrap">
+              <img src="${personIcon}" alt="" class="auth-dialog__input-icon" />
+              <input type="text" required minlength="3" class="auth-dialog__input" placeholder="e.g. CozyGamer_99" />
+            </span>
           </label>
+
           <label class="auth-dialog__label">
             Email Address
-            <input type="email" class="auth-dialog__input" placeholder="your.email@domain.com" />
+            <span class="auth-dialog__input-wrap">
+              <img src="${mailIcon}" alt="" class="auth-dialog__input-icon" />
+              <input type="email" required class="auth-dialog__input" placeholder="your.email@domain.com" />
+            </span>
           </label>
+
           <label class="auth-dialog__label">
             Password
-            <input type="password" class="auth-dialog__input" placeholder="Min. 8 characters" />
+            <span class="auth-dialog__input-wrap">
+              <img src="${lockIcon}" alt="" class="auth-dialog__input-icon" />
+              <input
+                type="password"
+                required
+                minlength="8"
+                class="auth-dialog__input auth-dialog__input--has-toggle"
+                placeholder="Min. 8 characters"
+              />
+              <button type="button" class="auth-dialog__toggle-visibility" aria-label="Show password">
+                <img src="${visibilityIcon}" alt="" />
+              </button>
+            </span>
           </label>
+
           <label class="auth-dialog__label">
             Confirm Password
-            <input type="password" class="auth-dialog__input" placeholder="Repeat your password" />
+            <span class="auth-dialog__input-wrap">
+              <img src="${lockIcon}" alt="" class="auth-dialog__input-icon" />
+              <input
+                type="password"
+                required
+                minlength="8"
+                class="auth-dialog__input auth-dialog__input--has-toggle"
+                placeholder="Repeat your password"
+              />
+              <button type="button" class="auth-dialog__toggle-visibility" aria-label="Show password">
+                <img src="${visibilityIcon}" alt="" />
+              </button>
+            </span>
           </label>
+
           <button type="submit" class="auth-dialog__submit">Create Account</button>
         </form>
 
         <div class="auth-dialog__divider"><span>OR</span></div>
-        <button type="button" class="auth-dialog__google">Sign up with Google</button>
+        <button type="button" class="auth-dialog__google">
+          <img src="${googleIcon}" alt="" width="20" height="20" />
+          Sign up with Google
+        </button>
 
         <p class="auth-dialog__switch-text">
           Already have an account?
@@ -127,6 +189,20 @@ export function createAuthDialog(): AuthDialog {
   for (const form of forms) {
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+    });
+  }
+
+  const toggleButtons = dialog.querySelectorAll<HTMLButtonElement>(
+    '.auth-dialog__toggle-visibility',
+  );
+  for (const toggleButton of toggleButtons) {
+    toggleButton.addEventListener('click', () => {
+      const input = toggleButton.previousElementSibling;
+      if (input instanceof HTMLInputElement) {
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        toggleButton.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+      }
     });
   }
 
