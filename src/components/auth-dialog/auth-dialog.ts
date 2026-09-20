@@ -198,11 +198,13 @@ export function createAuthDialog(): AuthDialog {
   for (const toggleButton of toggleButtons) {
     toggleButton.addEventListener('click', () => {
       const input = toggleButton.previousElementSibling;
-      if (input instanceof HTMLInputElement) {
-        const isPassword = input.type === 'password';
-        input.type = isPassword ? 'text' : 'password';
-        toggleButton.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+      if (!(input instanceof HTMLInputElement)) {
+        return;
       }
+
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      toggleButton.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
     });
   }
 
