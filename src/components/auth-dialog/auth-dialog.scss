@@ -6,6 +6,12 @@
   position: fixed;
   inset: 0;
   z-index: 200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $size-3;
+
   background-color: rgba(0, 0, 0, 0.5);
 
   opacity: 0;
@@ -21,37 +27,207 @@
 }
 
 .auth-dialog {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 201;
-
-  width: calc(100% - #{$size-4});
+  width: 100%;
   max-width: 420px;
+  max-height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
   padding: $size-3;
+  overflow: hidden;
 
   background-color: $color-bg;
   border: 2px solid $color-on-primary;
   border-radius: $corner-large;
 
   opacity: 0;
-  visibility: hidden;
-  transform: translate(-50%, -50%) scale(0.95);
+  transform: scale(0.95);
   transition:
     opacity 0.2s ease,
-    visibility 0.2s,
     transform 0.2s ease;
 
-  &--open {
+  .auth-backdrop--open & {
     opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 }
 
-.auth-dialog__placeholder {
+.auth-dialog__tabs {
+  flex-shrink: 0;
+  display: flex;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-medium;
+  overflow: hidden;
+}
+
+.auth-dialog__tab {
+  flex: 1;
+  padding: $size-2;
+
+  background-color: $color-bg;
+  border: none;
+  color: $color-on-primary;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-small;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &--active {
+    background-color: $color-on-primary;
+    color: $color-white;
+  }
+}
+
+.auth-dialog__panels {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  overflow-y: auto;
+  overflow-anchor: none;
+}
+
+.auth-dialog__panel {
+  display: none;
+  flex-direction: column;
+  gap: $size-2;
+
+  &--active {
+    display: flex;
+    animation: auth-panel-fade 0.2s ease;
+  }
+}
+
+@keyframes auth-panel-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-dialog__title {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+  font-size: $font-size-headline-small;
+}
+
+.auth-dialog__subtitle {
   font-family: $font-family-inter;
   color: $color-on-bg;
-  font-size: $font-size-body-medium;
+  font-size: $font-size-body-small;
+}
+
+.auth-dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+}
+
+.auth-dialog__label {
+  display: flex;
+  flex-direction: column;
+  gap: $size-05;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-label-large;
+  color: $color-on-primary;
+}
+
+.auth-dialog__input {
+  padding: $size-2;
+  border: 2px solid $color-outline;
+  border-radius: $corner-small;
+  font-family: $font-family-inter;
+  font-size: $font-size-body-small;
+  color: $color-on-primary;
+
+  &::placeholder {
+    color: $color-on-bg-low;
+  }
+}
+
+.auth-dialog__forgot {
+  align-self: flex-end;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-label-medium;
+  color: $color-on-primary;
+  text-decoration: underline;
+}
+
+.auth-dialog__submit {
+  width: 100%;
+  padding: $btn-medium-padding;
+
+  background-color: $color-primary;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-small;
+  color: $color-on-primary;
+  font-family: $font-family-roboto;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-small;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-primary-high;
+  }
+}
+
+.auth-dialog__divider {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+  color: $color-on-bg-low;
+  font-family: $font-family-inter;
+  font-size: $font-size-label-medium;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: $color-outline;
+  }
+}
+
+.auth-dialog__google {
+  width: 100%;
+  padding: $btn-medium-padding;
+
+  background-color: $color-white;
+  border: 2px solid $color-outline;
+  border-radius: $corner-small;
+  color: $color-on-primary;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-small;
+  cursor: pointer;
+}
+
+.auth-dialog__switch-text {
   text-align: center;
+  font-family: $font-family-inter;
+  color: $color-on-bg;
+  font-size: $font-size-label-medium;
+}
+
+.auth-dialog__switch-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: $color-on-primary;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-label-medium;
+  text-decoration: underline;
+  cursor: pointer;
 }
