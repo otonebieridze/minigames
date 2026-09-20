@@ -50,8 +50,10 @@ export function renderHeader(): HTMLElement {
   loginButton?.addEventListener('click', () => authDialog.open());
   signupButton?.addEventListener('click', () => authDialog.open());
 
-  const mobileLoginButton = mobileNav.element.querySelector<HTMLButtonElement>('.mobile-nav__login-btn');
-  const mobileSignupButton = mobileNav.element.querySelector<HTMLButtonElement>('.mobile-nav__signup-btn');
+  const mobileLoginButton =
+    mobileNav.element.querySelector<HTMLButtonElement>('.mobile-nav__login-btn');
+  const mobileSignupButton =
+    mobileNav.element.querySelector<HTMLButtonElement>('.mobile-nav__signup-btn');
   mobileLoginButton?.addEventListener('click', () => {
     mobileNav.close();
     authDialog.open();
