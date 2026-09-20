@@ -3,23 +3,27 @@
 @use '../../styles/mixins' as *;
 
 .auth-backdrop {
-  display: none;
   position: fixed;
   inset: 0;
   z-index: 200;
   background-color: rgba(0, 0, 0, 0.5);
 
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s;
+
   &--open {
-    display: block;
+    opacity: 1;
+    visibility: visible;
   }
 }
 
 .auth-dialog {
-  display: none;
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 201;
 
   width: calc(100% - #{$size-4});
@@ -30,8 +34,18 @@
   border: 2px solid $color-on-primary;
   border-radius: $corner-large;
 
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -50%) scale(0.95);
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s,
+    transform 0.2s ease;
+
   &--open {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 

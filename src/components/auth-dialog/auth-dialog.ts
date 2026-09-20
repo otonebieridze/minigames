@@ -31,5 +31,13 @@ export function createAuthDialog(): AuthDialog {
     dialog.classList.remove('auth-dialog--open');
   }
 
+  backdrop.addEventListener('click', close);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      close();
+    }
+  });
+
   return { backdrop, dialog, open, close };
 }
