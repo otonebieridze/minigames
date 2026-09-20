@@ -1,0 +1,155 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero__bg-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('../../assets/images/hero-bg.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2;
+}
+
+.hero__bg-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: rgba($color-bg-footer, 0.65);
+}
+
+.hero__inner {
+  width: 100%;
+  max-width: $breakpoint-desktop;
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+
+  padding-inline: $size-2;
+  padding-block: $size-8;
+
+  @include tablet-up {
+    padding-inline: $size-5;
+    padding-block: $size-9;
+  }
+
+  @include desktop-up {
+    padding-inline: $size-15;
+    padding-block: $size-14;
+  }
+}
+
+.hero__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+
+  background-color: $color-bg;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-medium;
+  box-shadow: $shadow-level-1;
+  gap: $size-2;
+  padding: $size-3;
+
+  @include tablet-up {
+    width: 480px;
+    border-width: 2.5px;
+    border-radius: $corner-large;
+    box-shadow: $shadow-level-2;
+  }
+
+  @include desktop-up {
+    width: 640px;
+    border-width: 3px;
+    border-radius: $corner-extra-large;
+    box-shadow: $shadow-level-3;
+    gap: $size-3;
+    padding: $size-6;
+  }
+}
+
+.hero__title {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+  font-size: $font-size-display-small;
+  line-height: 1.2;
+
+  @include tablet-up {
+    font-size: $font-size-display-medium;
+    line-height: 1.15;
+  }
+
+  @include desktop-up {
+    font-size: $font-size-display-large;
+    line-height: 1.1;
+  }
+}
+
+.hero__text {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-medium;
+  color: $color-on-bg;
+  font-size: $font-size-label-medium;
+  line-height: 1.4;
+
+  @include tablet-up {
+    font-size: $font-size-body-small;
+  }
+
+  @include desktop-up {
+    font-size: $font-size-body-large;
+    line-height: 1.5;
+  }
+}
+
+.hero__text--short {
+  @include tablet-up {
+    display: none;
+  }
+}
+
+.hero__text--long {
+  display: none;
+
+  @include tablet-up {
+    display: block;
+  }
+}
+
+.hero__button {
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-small;
+  background-color: $color-primary;
+  color: $color-on-primary;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+
+  padding: $btn-small-padding;
+  font-size: $font-size-label-medium;
+
+  @include tablet-up {
+    padding: $btn-medium-padding;
+    font-size: $font-size-body-small;
+  }
+
+  @include desktop-up {
+    padding: $btn-large-padding;
+    font-size: $font-size-body-large;
+  }
+
+  &:hover {
+    background-color: $color-primary-high;
+  }
+}

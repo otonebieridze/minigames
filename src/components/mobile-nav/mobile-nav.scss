@@ -1,0 +1,124 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+  gap: $size-4;
+
+  background-color: $color-bg-footer;
+  border-left: 2px solid $color-on-primary;
+  padding: $size-3;
+
+  transform: translateX(100%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease,
+    visibility 0.3s;
+
+  &--open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @include nav-desktop-up {
+    display: none;
+  }
+}
+
+.mobile-nav__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-nav__logo {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+  text-decoration: none;
+  color: $color-white;
+
+  span {
+    font-family: $font-family-inter;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-headline-small;
+  }
+}
+
+.mobile-nav__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $size-4;
+  height: $size-4;
+  border: none;
+  border-radius: $corner-small;
+  background-color: $color-bg-footer-low;
+  color: $color-white;
+  font-size: $font-size-headline-small;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mobile-nav__links {
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
+  flex: 1;
+}
+
+.mobile-nav__link {
+  font-family: $font-family-inter;
+  font-size: $font-size-body-large;
+  font-weight: $font-weight-medium;
+  color: $color-on-bg-footer;
+  text-decoration: none;
+
+  &--active {
+    font-weight: $font-weight-bold;
+    color: $color-primary;
+  }
+}
+
+.mobile-nav__actions {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  width: 272px;
+  max-width: 100%;
+}
+
+.mobile-nav__login-btn {
+  width: 100%;
+  padding: $btn-medium-padding;
+  border: 2px solid $color-white;
+  border-radius: $corner-small;
+  background: transparent;
+  color: $color-white;
+  font-family: $font-family-inter;
+  font-size: $font-size-label-large;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+}
+
+.mobile-nav__signup-btn {
+  width: 100%;
+  padding: $btn-medium-padding;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-small;
+  background-color: $color-primary;
+  color: $color-on-primary;
+  font-family: $font-family-inter;
+  font-size: $font-size-label-large;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+}

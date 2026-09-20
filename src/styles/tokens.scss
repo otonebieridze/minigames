@@ -1,0 +1,116 @@
+// =============================================
+// Color Tokens
+// =============================================
+
+// Base
+$color-white: #ffffff; // bg, text-color
+$color-black: #000000; // gradient
+
+// General
+$color-bg: #f9f8f3; // base background
+$color-on-bg: #5f5d75; // base text-color
+$color-on-bg-low: #737380; // text-color for additional info
+$color-bg-footer: #1e1b3a; // footer background
+$color-bg-footer-low: #2a264f; // social-link
+$color-bg-footer-lowest: #3c376e; // social-link hover
+$color-on-bg-footer: #b9b5c9; // footer text-color
+$color-surface: #fff9e5; // button-hover
+$color-surface-low: #fffcf5; // input focus
+$color-primary: #ffd02b; // button, text-color
+$color-primary-low: #fde047; // sort-action
+$color-primary-high: #e5bb00; // button-hover
+$color-on-primary: #242145; // primary text-color
+$color-secondary: #f0eeff; // badge
+$color-tertiary: #3a2ebf; // table header, button hover
+$color-like: #ff4b4b; // like icon
+$color-error: #b3261e; // validation error
+$color-price-free: #0b8a8f; // price
+
+// Borders
+$color-outline: #e5e7eb; // border
+$color-outline-variant: #d2d2d2; // border
+
+// Additional (avatar backgrounds)
+$color-avatar-random-1: #e9eef6;
+$color-avatar-random-2: #a3e2c9;
+$color-avatar-random-3: #bce3ff;
+$color-avatar-random-4: #ffc6ff;
+$color-avatar-random-5: #e8dff5;
+
+// =============================================
+// Font Tokens
+// =============================================
+
+$font-family-inter: 'Inter', sans-serif;
+$font-family-roboto: 'Roboto', sans-serif;
+
+// Size
+$font-size-display-large: 56px;
+$font-size-display-medium: 36px;
+$font-size-display-small: 24px;
+$font-size-headline-large: 32px;
+$font-size-headline-medium: 24px;
+$font-size-headline-small: 20px;
+$font-size-body-large: 18px;
+$font-size-body-medium: 16px;
+$font-size-body-small: 14px;
+$font-size-label-extra-large: 16px;
+$font-size-label-large: 14px;
+$font-size-label-medium: 12px;
+$font-size-label-small: 10px;
+
+// Weight
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 800;
+
+// =============================================
+// Size Tokens (spacing scale)
+// =============================================
+
+$size-05: 4px;
+$size-1: 8px;
+$size-2: 16px;
+$size-3: 24px;
+$size-4: 32px;
+$size-5: 40px;
+$size-6: 48px;
+$size-7: 56px;
+$size-8: 64px;
+$size-9: 72px;
+$size-10: 80px;
+$size-11: 88px;
+$size-12: 96px;
+$size-13: 104px;
+$size-14: 112px;
+$size-15: 120px;
+
+// =============================================
+// Corner Radius Tokens
+// =============================================
+
+$corner-extra-small: 4px;
+$corner-small: 8px;
+$corner-medium: 12px;
+$corner-large: 16px;
+$corner-extra-large: 24px;
+$corner-full: 9999px;
+
+// =============================================
+// Button Tokens
+// =============================================
+
+$btn-large-padding: 16px 24px;
+$btn-medium-padding: 10px 20px;
+$btn-small-padding: 8px 16px;
+$btn-icon-padding: 8px;
+
+// =============================================
+// Shadow Tokens
+// =============================================
+
+$shadow-level-1: 4px 4px 0 $color-on-primary;
+$shadow-level-2: 6px 6px 0 $color-on-primary;
+$shadow-level-3: 8px 8px 0 $color-on-primary;
