@@ -1,0 +1,43 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.auth-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  &--open {
+    display: block;
+  }
+}
+
+.auth-dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 201;
+
+  width: calc(100% - #{$size-4});
+  max-width: 420px;
+  padding: $size-3;
+
+  background-color: $color-bg;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-large;
+
+  &--open {
+    display: block;
+  }
+}
+
+.auth-dialog__placeholder {
+  font-family: $font-family-inter;
+  color: $color-on-bg;
+  font-size: $font-size-body-medium;
+  text-align: center;
+}

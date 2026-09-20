@@ -2,6 +2,7 @@ import './header.scss';
 import logoIcon from '../../assets/icons/logo.png';
 import hamburgerIcon from '../../assets/icons/hamburger.png';
 import { createMobileNav } from '../mobile-nav/mobile-nav';
+import { createAuthDialog } from '../auth-dialog/auth-dialog';
 
 export function renderHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -34,7 +35,8 @@ export function renderHeader(): HTMLElement {
   `;
 
   const mobileNav = createMobileNav();
-  document.body.append(mobileNav.element);
+  const authDialog = createAuthDialog();
+  document.body.append(mobileNav.element, authDialog.backdrop, authDialog.dialog);
 
   const burgerButton = header.querySelector<HTMLButtonElement>('.header__burger');
   if (burgerButton) {
@@ -42,6 +44,22 @@ export function renderHeader(): HTMLElement {
       mobileNav.toggle();
     });
   }
+
+  const loginButton = header.querySelector<HTMLButtonElement>('.header__login-btn');
+  const signupButton = header.querySelector<HTMLButtonElement>('.header__signup-btn');
+  loginButton?.addEventListener('click', () => authDialog.open());
+  signupButton?.addEventListener('click', () => authDialog.open());
+
+  const mobileLoginButton = mobileNav.element.querySelector<HTMLButtonElement>('.mobile-nav__login-btn');
+  const mobileSignupButton = mobileNav.element.querySelector<HTMLButtonElement>('.mobile-nav__signup-btn');
+  mobileLoginButton?.addEventListener('click', () => {
+    mobileNav.close();
+    authDialog.open();
+  });
+  mobileSignupButton?.addEventListener('click', () => {
+    mobileNav.close();
+    authDialog.open();
+  });
 
   return header;
 }
