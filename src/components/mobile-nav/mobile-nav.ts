@@ -1,5 +1,6 @@
 import './mobile-nav.scss';
 import logoIcon from '../../assets/icons/logo.png';
+import { getCurrentPath } from '../../app/navigation';
 
 interface MobileNav {
   element: HTMLElement;
@@ -24,8 +25,8 @@ export function createMobileNav(): MobileNav {
     </div>
 
     <nav class="mobile-nav__links" aria-label="Mobile navigation links">
-      <a href="#/" class="mobile-nav__link mobile-nav__link--active">Home</a>
-      <a href="#/library" class="mobile-nav__link">Library</a>
+      <a href="#/" class="mobile-nav__link" data-path="/">Home</a>
+      <a href="#/library" class="mobile-nav__link" data-path="/library">Library</a>
       <a href="#/" class="mobile-nav__link">Tournaments</a>
       <a href="#/" class="mobile-nav__link">Community</a>
     </nav>
@@ -58,6 +59,18 @@ export function createMobileNav(): MobileNav {
       close();
     }
   });
+
+  const navLinks = nav.querySelectorAll<HTMLAnchorElement>('.mobile-nav__link[data-path]');
+
+  function updateActiveLink(): void {
+    const currentPath = getCurrentPath();
+    navLinks.forEach((link) => {
+      link.classList.toggle('mobile-nav__link--active', link.dataset.path === currentPath);
+    });
+  }
+
+  updateActiveLink();
+  globalThis.addEventListener('hashchange', updateActiveLink);
 
   return { element: nav, open, close, toggle };
 }
