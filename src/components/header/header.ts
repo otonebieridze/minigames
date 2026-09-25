@@ -3,6 +3,7 @@ import logoIcon from '../../assets/icons/logo.png';
 import hamburgerIcon from '../../assets/icons/hamburger.png';
 import { createMobileNav } from '../mobile-nav/mobile-nav';
 import { createAuthDialog } from '../auth-dialog/auth-dialog';
+import { getCurrentPath } from '../../app/navigation';
 
 export function renderHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -17,8 +18,8 @@ export function renderHeader(): HTMLElement {
 
       <div class="header__right">
         <nav class="header__nav" aria-label="Main navigation">
-          <a href="#/" class="header__nav-link header__nav-link--active">Home</a>
-          <a href="#/" class="header__nav-link">Library</a>
+          <a href="#/" class="header__nav-link" data-path="/">Home</a>
+          <a href="#/library" class="header__nav-link" data-path="/library">Library</a>
           <a href="#/" class="header__nav-link">Tournaments</a>
           <a href="#/" class="header__nav-link">Community</a>
         </nav>
@@ -62,6 +63,18 @@ export function renderHeader(): HTMLElement {
     mobileNav.close();
     authDialog.open('register');
   });
+
+  const navLinks = header.querySelectorAll<HTMLAnchorElement>('.header__nav-link[data-path]');
+
+  function updateActiveLink(): void {
+    const currentPath = getCurrentPath();
+    for (const link of navLinks) {
+      link.classList.toggle('header__nav-link--active', link.dataset.path === currentPath);
+    }
+  }
+
+  updateActiveLink();
+  globalThis.addEventListener('hashchange', updateActiveLink);
 
   return header;
 }
