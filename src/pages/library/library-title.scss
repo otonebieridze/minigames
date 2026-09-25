@@ -1,0 +1,51 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.library-title {
+  display: flex;
+  flex-direction: column;
+  gap: $size-1;
+  width: 100%;
+  max-width: $breakpoint-desktop;
+  margin-inline: auto;
+  padding: $size-2;
+
+  @include tablet-up {
+    padding: $size-3 $size-5;
+  }
+
+  @include wide-up {
+    padding: $size-5 $size-15;
+  }
+}
+
+.library-title__heading {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+  font-size: $font-size-display-small;
+
+  @include tablet-up {
+    font-size: $font-size-display-medium;
+  }
+
+  @include wide-up {
+    font-size: $font-size-display-large;
+  }
+}
+
+.library-title__subheading {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-medium;
+  color: $color-on-bg;
+  font-size: $font-size-body-small;
+
+  @include tablet-up {
+    font-size: $font-size-body-medium;
+  }
+
+  @include wide-up {
+    font-size: $font-size-body-large;
+  }
+}
