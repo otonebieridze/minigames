@@ -64,13 +64,16 @@ export function createMobileNav(): MobileNav {
 
   function updateActiveLink(): void {
     const currentPath = getCurrentPath();
-    navLinks.forEach((link) => {
+    for (const link of navLinks) {
       link.classList.toggle('mobile-nav__link--active', link.dataset.path === currentPath);
-    });
+    }
   }
 
   updateActiveLink();
-  globalThis.addEventListener('hashchange', updateActiveLink);
+  globalThis.addEventListener('hashchange', () => {
+    updateActiveLink();
+    close();
+  });
 
   return { element: nav, open, close, toggle };
 }

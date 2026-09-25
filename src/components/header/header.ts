@@ -68,9 +68,9 @@ export function renderHeader(): HTMLElement {
 
   function updateActiveLink(): void {
     const currentPath = getCurrentPath();
-    navLinks.forEach((link) => {
+    for (const link of navLinks) {
       link.classList.toggle('header__nav-link--active', link.dataset.path === currentPath);
-    });
+    }
   }
 
   updateActiveLink();
