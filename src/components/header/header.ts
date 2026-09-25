@@ -18,7 +18,7 @@ export function renderHeader(): HTMLElement {
       <div class="header__right">
         <nav class="header__nav" aria-label="Main navigation">
           <a href="#/" class="header__nav-link header__nav-link--active">Home</a>
-          <a href="#/" class="header__nav-link">Library</a>
+          <a href="#/library" class="header__nav-link">Library</a>
           <a href="#/" class="header__nav-link">Tournaments</a>
           <a href="#/" class="header__nav-link">Community</a>
         </nav>

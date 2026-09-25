@@ -25,7 +25,7 @@ export function createMobileNav(): MobileNav {
 
     <nav class="mobile-nav__links" aria-label="Mobile navigation links">
       <a href="#/" class="mobile-nav__link mobile-nav__link--active">Home</a>
-      <a href="#/" class="mobile-nav__link">Library</a>
+      <a href="#/library" class="mobile-nav__link">Library</a>
       <a href="#/" class="mobile-nav__link">Tournaments</a>
       <a href="#/" class="mobile-nav__link">Community</a>
     </nav>
