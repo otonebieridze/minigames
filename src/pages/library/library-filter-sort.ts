@@ -1,21 +1,6 @@
 import './library-filter-sort.scss';
 import arrowDropDownIcon from '../../assets/icons/arrow_drop_down.png';
-
-interface Category {
-  slug: string;
-  label: string;
-  isDefault: boolean;
-}
-
-const categories: Category[] = [
-  { slug: 'all', label: 'All Games', isDefault: true },
-  { slug: 'puzzle', label: 'Puzzle', isDefault: false },
-  { slug: 'card', label: 'Card', isDefault: false },
-  { slug: 'match', label: 'Match', isDefault: false },
-  { slug: 'farm', label: 'Farm', isDefault: false },
-  { slug: 'strategy', label: 'Strategy', isDefault: false },
-  { slug: 'arcade', label: 'Arcade', isDefault: false },
-];
+import { categories } from '../../data/categories';
 
 const sortOptions: string[] = ['Rating', 'Popularity', 'Newest', 'Price: Low to High'];
 
