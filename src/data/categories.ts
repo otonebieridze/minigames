@@ -1,0 +1,15 @@
+export interface Category {
+  slug: string;
+  label: string;
+  isDefault: boolean;
+}
+
+export const categories: Category[] = [
+  { slug: 'all', label: 'All Games', isDefault: true },
+  { slug: 'puzzle', label: 'Puzzle', isDefault: false },
+  { slug: 'card', label: 'Card', isDefault: false },
+  { slug: 'match', label: 'Match', isDefault: false },
+  { slug: 'farm', label: 'Farm', isDefault: false },
+  { slug: 'strategy', label: 'Strategy', isDefault: false },
+  { slug: 'arcade', label: 'Arcade', isDefault: false },
+];
