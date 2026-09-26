@@ -1,0 +1,87 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.game-details-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $size-3;
+
+  background-color: rgba(0, 0, 0, 0.5);
+
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s;
+
+  &--open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.game-details-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  max-height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  background-color: $color-bg;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-large;
+
+  opacity: 0;
+  transform: scale(0.95);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+
+  .game-details-backdrop--open & {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.game-details-dialog__close {
+  position: absolute;
+  top: $size-2;
+  right: $size-2;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $size-4;
+  height: $size-4;
+
+  background-color: $color-white;
+  border: none;
+  border-radius: $corner-full;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-surface;
+  }
+}
+
+.game-details-dialog__content {
+  overflow-y: auto;
+  padding: $size-3;
+}
+
+.game-details-dialog__title {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-headline-medium;
+  color: $color-on-primary;
+}
