@@ -1,0 +1,64 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.library-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $size-1;
+  padding: $size-3 $size-2;
+}
+
+.library-pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+  list-style: none;
+}
+
+.library-pagination__page,
+.library-pagination__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $size-5;
+  height: $size-5;
+  border-radius: $corner-full;
+  border: 2px solid $color-on-primary;
+  background-color: $color-white;
+  color: $color-on-primary;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-label-large;
+  cursor: pointer;
+}
+
+.library-pagination__page:hover {
+  background-color: $color-secondary;
+}
+
+.library-pagination__page--active,
+.library-pagination__page--active:hover {
+  background-color: $color-on-primary;
+  border-color: $color-on-primary;
+  color: $color-white;
+  cursor: default;
+}
+
+.library-pagination__arrow {
+  &:hover:not(:disabled) {
+    background-color: $color-surface;
+  }
+
+  &:disabled {
+    border-color: $color-outline-variant;
+    color: $color-outline-variant;
+    background-color: $color-white;
+    cursor: not-allowed;
+
+    img {
+      opacity: 0.4;
+    }
+  }
+}

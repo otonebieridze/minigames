@@ -27,7 +27,7 @@ export function renderFooter(): HTMLElement {
         <div class="footer__col">
           <p class="footer__heading">Explore</p>
           <a href="#/" class="footer__link">Home</a>
-          <a href="#/" class="footer__link">Library</a>
+          <a href="#/library" class="footer__link">Library</a>
           <a href="#/" class="footer__link">Categories</a>
           <a href="#/" class="footer__link">Tournaments</a>
         </div>

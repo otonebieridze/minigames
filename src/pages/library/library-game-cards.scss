@@ -1,0 +1,203 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/breakpoints' as *;
+@use '../../styles/mixins' as *;
+
+.library-game-cards {
+  width: 100%;
+  max-width: $breakpoint-desktop;
+  margin-inline: auto;
+  padding: $size-2;
+
+  @include tablet-up {
+    padding: $size-2 $size-5;
+  }
+
+  @include wide-up {
+    padding: $size-3 $size-15;
+  }
+}
+
+.library-game-cards__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $size-2;
+  align-items: stretch;
+
+  @include wide-up {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $size-3;
+  }
+}
+
+.library-game-cards__item {
+  list-style: none;
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: $color-white;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-large;
+  box-shadow: $shadow-level-2;
+  overflow: hidden;
+
+  @include tablet-up {
+    flex-direction: row;
+  }
+}
+
+.game-card__image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  flex-shrink: 0;
+
+  @include tablet-up {
+    width: 240px;
+    height: auto;
+    aspect-ratio: auto;
+    align-self: stretch;
+  }
+}
+
+.game-card__content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-areas:
+    'title  title'
+    'desc   desc'
+    'stats  price'
+    'button button';
+  column-gap: $size-2;
+  row-gap: $size-1;
+  padding: $size-2;
+  min-width: 0;
+  height: 100%;
+
+  @include tablet-up {
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      'title  price'
+      'desc   desc'
+      'stats  button';
+  }
+}
+
+.game-card__title-row {
+  grid-area: title;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $size-05;
+  min-width: 0;
+
+  @include tablet-up {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: $size-1;
+  }
+}
+
+.game-card__title {
+  min-width: 0;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-large;
+  color: $color-on-primary;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  @include tablet-up {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+.game-card__badge {
+  flex-shrink: 0;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-label-medium;
+  color: $color-on-primary;
+  background-color: $color-secondary;
+  border-radius: $corner-full;
+  padding: 2px $size-1;
+}
+
+.game-card__price {
+  grid-area: price;
+  align-self: start;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-medium;
+  color: $color-price-free;
+}
+
+.game-card__description {
+  grid-area: desc;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-body-small;
+  color: $color-on-bg-low;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.game-card__stats {
+  grid-area: stats;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-label-large;
+}
+
+.game-card__rating {
+  color: $color-primary-high;
+}
+
+.game-card__likes {
+  color: $color-like;
+}
+
+.game-card__details-btn {
+  grid-area: button;
+  align-self: end;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-label-large;
+  color: $color-on-primary;
+  background-color: $color-primary;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-small;
+  padding: $btn-small-padding;
+  cursor: pointer;
+  width: 100%;
+
+  @include tablet-up {
+    width: fit-content;
+    justify-self: end;
+  }
+
+  &:hover {
+    background-color: $color-primary-high;
+  }
+}
