@@ -309,3 +309,180 @@
   font-size: $font-size-label-medium;
   color: $color-on-bg-low;
 }
+
+.game-details-dialog__comments {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  margin-top: $size-3;
+}
+
+.game-details-dialog__comments-title {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-medium;
+  color: $color-on-primary;
+}
+
+.game-details-dialog__comment-form {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+}
+
+.game-details-dialog__comment-avatar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: $corner-full;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-label-medium;
+  color: $color-on-primary;
+
+  &--user {
+    width: $size-5;
+    height: $size-5;
+    font-size: $font-size-body-medium;
+    background-color: $color-primary;
+  }
+
+  &--blue {
+    background-color: $color-avatar-random-3;
+  }
+
+  &--yellow {
+    background-color: $color-primary;
+  }
+
+  &--gray {
+    background-color: $color-avatar-random-1;
+  }
+}
+
+.game-details-dialog__comment-input {
+  flex: 1;
+  min-height: $size-6;
+  max-height: 88px;
+  resize: none;
+  overflow-y: auto;
+
+  padding: $size-1 $size-2;
+  border: 2px solid $color-outline;
+  border-radius: $corner-full;
+  font-family: $font-family-inter;
+  font-size: $font-size-body-small;
+  color: $color-on-primary;
+
+  &::placeholder {
+    color: $color-on-bg-low;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $color-on-primary;
+  }
+}
+
+.game-details-dialog__comment-submit {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $size-5;
+  height: $size-5;
+
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.game-details-dialog__comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  list-style: none;
+}
+
+.game-details-dialog__comment {
+  display: flex;
+  flex-direction: column;
+  gap: $size-1;
+  padding: $size-2;
+
+  background-color: $color-white;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-large;
+  box-shadow: $shadow-level-1;
+}
+
+.game-details-dialog__comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-1;
+}
+
+.game-details-dialog__comment-header-left {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+  min-width: 0;
+}
+
+.game-details-dialog__comment-author {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-small;
+  color: $color-on-primary;
+}
+
+.game-details-dialog__comment-time {
+  flex-shrink: 0;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-label-medium;
+  color: $color-on-bg-low;
+}
+
+.game-details-dialog__comment-text {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-body-small;
+  color: $color-on-bg;
+  line-height: 1.5;
+}
+
+.game-details-dialog__comment-like {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: $size-05;
+
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  font-family: $font-family-inter;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-label-large;
+}
+
+.game-details-dialog__comment-like-icon {
+  display: block;
+}
+
+.game-details-dialog__comment-like-count {
+  color: $color-on-bg-low;
+}
