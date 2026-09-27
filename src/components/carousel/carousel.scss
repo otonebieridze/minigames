@@ -115,6 +115,14 @@
 
   padding-inline: $size-05;
 
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+
   @include tablet-up {
     padding-inline: $size-1;
   }
@@ -133,6 +141,10 @@
   border: 2.5px solid $color-on-primary;
   border-radius: $corner-large;
   box-shadow: $shadow-level-1;
+
+  transition:
+    flex-basis 0.4s ease,
+    opacity 0.4s ease;
 
   @include tablet-up {
     flex-basis: 13.75%;
@@ -159,6 +171,12 @@
       display: block;
     }
   }
+
+  &--hidden {
+    flex-basis: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .carousel__card-image {
@@ -166,6 +184,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 .carousel__overlay {
@@ -194,6 +214,11 @@
   font-weight: $font-weight-bold;
   color: $color-white;
   font-size: $font-size-label-medium;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 
   @include tablet-up {
     font-size: $font-size-body-small;
