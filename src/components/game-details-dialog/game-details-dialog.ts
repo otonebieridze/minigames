@@ -7,6 +7,7 @@ import trophyIcon from '../../assets/icons/trophy.png';
 import recordIcon1 from '../../assets/icons/record-icon-1.png';
 import recordIcon2 from '../../assets/icons/record-icon-2.png';
 import recordIcon3 from '../../assets/icons/record-icon-3.png';
+import sendIcon from '../../assets/icons/send-comment-trigger.png';
 import { gameDetailsMock } from '../../data/game-details-mock';
 
 interface GameDetailsDialog {
@@ -15,7 +16,19 @@ interface GameDetailsDialog {
   close: () => void;
 }
 
+interface CommentLikeReference {
+  button: HTMLButtonElement;
+  icon: HTMLImageElement;
+  initialLiked: boolean;
+}
+
 const recordIcons = [recordIcon1, recordIcon2, recordIcon3];
+const AVATAR_COLORS = ['blue', 'yellow', 'gray'] as const;
+const TEXTAREA_MAX_HEIGHT_PX = 88;
+
+function getAvatarColor(index: number): string {
+  return AVATAR_COLORS[index % AVATAR_COLORS.length];
+}
 
 export function createGameDetailsDialog(): GameDetailsDialog {
   const backdrop = document.createElement('div');
@@ -53,6 +66,38 @@ export function createGameDetailsDialog(): GameDetailsDialog {
         </li>
       `,
     )
+    .join('');
+
+  const commentsHtml = gameDetailsMock.comments
+    .map((comment, index) => {
+      const avatarColor = getAvatarColor(index);
+      const avatarInitial = comment.authorName.charAt(0).toUpperCase();
+      const likeIcon = comment.isLikedByCurrentUser ? favoriteIcon : favoriteIconBlack;
+
+      return `
+        <li class="game-details-dialog__comment">
+          <div class="game-details-dialog__comment-header">
+            <div class="game-details-dialog__comment-header-left">
+              <div class="game-details-dialog__comment-avatar game-details-dialog__comment-avatar--${avatarColor}">
+                ${avatarInitial}
+              </div>
+              <span class="game-details-dialog__comment-author">${comment.authorName}</span>
+            </div>
+            <span class="game-details-dialog__comment-time">${comment.timeAgo}</span>
+          </div>
+          <p class="game-details-dialog__comment-text">${comment.text}</p>
+          <button
+            type="button"
+            class="game-details-dialog__comment-like"
+            data-comment-id="${comment.commentId}"
+            aria-pressed="${comment.isLikedByCurrentUser}"
+          >
+            <img src="${likeIcon}" alt="" class="game-details-dialog__comment-like-icon" width="16" height="16" />
+            <span class="game-details-dialog__comment-like-count">${comment.likesCount}</span>
+          </button>
+        </li>
+      `;
+    })
     .join('');
 
   dialog.innerHTML = `
@@ -99,6 +144,26 @@ export function createGameDetailsDialog(): GameDetailsDialog {
           ${recordsHtml}
         </ul>
       </section>
+
+      <section class="game-details-dialog__comments">
+        <h3 class="game-details-dialog__comments-title">Comments (${gameDetailsMock.comments.length})</h3>
+
+        <form class="game-details-dialog__comment-form">
+          <div class="game-details-dialog__comment-avatar game-details-dialog__comment-avatar--user">U</div>
+          <textarea
+            class="game-details-dialog__comment-input"
+            placeholder="Write a comment..."
+            rows="1"
+          ></textarea>
+          <button type="submit" class="game-details-dialog__comment-submit" aria-label="Submit comment">
+            <img src="${sendIcon}" alt="" width="40" height="40" />
+          </button>
+        </form>
+
+        <ul class="game-details-dialog__comments-list">
+          ${commentsHtml}
+        </ul>
+      </section>
     </div>
   `;
 
@@ -125,8 +190,68 @@ export function createGameDetailsDialog(): GameDetailsDialog {
     }
   });
 
+  const commentLikeReferences: CommentLikeReference[] = [];
+  const likeButtons = dialog.querySelectorAll<HTMLButtonElement>(
+    '.game-details-dialog__comment-like',
+  );
+
+  for (const likeButton of likeButtons) {
+    const commentId = likeButton.dataset.commentId;
+    const comment = gameDetailsMock.comments.find((item) => item.commentId === commentId);
+    const icon = likeButton.querySelector<HTMLImageElement>(
+      '.game-details-dialog__comment-like-icon',
+    );
+
+    if (!comment || !icon) {
+      continue;
+    }
+
+    commentLikeReferences.push({
+      button: likeButton,
+      icon,
+      initialLiked: comment.isLikedByCurrentUser,
+    });
+
+    likeButton.addEventListener('click', () => {
+      const isActive = likeButton.getAttribute('aria-pressed') === 'true';
+      const isActiveNext = !isActive;
+      likeButton.setAttribute('aria-pressed', String(isActiveNext));
+      icon.src = isActiveNext ? favoriteIcon : favoriteIconBlack;
+    });
+  }
+
+  function resetCommentLikes(): void {
+    for (const reference of commentLikeReferences) {
+      reference.button.setAttribute('aria-pressed', String(reference.initialLiked));
+      reference.icon.src = reference.initialLiked ? favoriteIcon : favoriteIconBlack;
+    }
+  }
+
+  const commentForm = dialog.querySelector<HTMLFormElement>('.game-details-dialog__comment-form');
+  const commentInput = dialog.querySelector<HTMLTextAreaElement>(
+    '.game-details-dialog__comment-input',
+  );
+
+  function resetCommentInput(): void {
+    if (!commentInput) return;
+    commentInput.value = '';
+    commentInput.style.height = '';
+  }
+
+  commentInput?.addEventListener('input', () => {
+    commentInput.style.height = 'auto';
+    const nextHeight = Math.min(commentInput.scrollHeight, TEXTAREA_MAX_HEIGHT_PX);
+    commentInput.style.height = `${nextHeight}px`;
+  });
+
+  commentForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+  });
+
   function open(): void {
     resetFavoriteState();
+    resetCommentLikes();
+    resetCommentInput();
     backdrop.classList.add('game-details-backdrop--open');
     document.body.style.overflow = 'hidden';
   }

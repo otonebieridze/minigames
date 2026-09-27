@@ -1,3 +1,5 @@
+import { comments } from './comments';
+
 export interface TopRecord {
   playerName: string;
   score: string;
@@ -22,4 +24,5 @@ export const gameDetailsMock = {
     { playerName: 'TeaBrewer', score: '332,400 pts', timeAgo: '5 days ago' },
     { playerName: 'HerbalistPath', score: '308,900 pts', timeAgo: '1 week ago' },
   ],
+  comments,
 };
