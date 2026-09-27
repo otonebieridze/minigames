@@ -1,17 +1,13 @@
 import './library-game-cards.scss';
 import { games } from '../../data/games';
 import { categories } from '../../data/categories';
+import { formatLikesCount } from '../../utils/format-likes-count';
 
 const GAMES_PER_PAGE = 6;
 
 function getCategoryLabel(slug: string): string {
   const category = categories.find((item) => item.slug === slug);
   return category ? category.label : slug;
-}
-
-function formatLikes(count: number): string {
-  const truncated = Math.floor(count / 100) / 10;
-  return `${truncated}K`;
 }
 
 export function renderLibraryGameCards(): HTMLElement {
@@ -37,7 +33,7 @@ export function renderLibraryGameCards(): HTMLElement {
           <p class="game-card__description">${game.shortDescription}</p>
           <div class="game-card__stats">
             <span class="game-card__rating">★ ${game.rating}</span>
-            <span class="game-card__likes">♥ ${formatLikes(game.likesCount)}</span>
+            <span class="game-card__likes">♥ ${formatLikesCount(game.likesCount)}</span>
           </div>
           <button type="button" class="game-card__details-btn">Details</button>
         </div>
