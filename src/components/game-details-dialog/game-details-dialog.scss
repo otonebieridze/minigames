@@ -39,6 +39,7 @@
   background-color: $color-bg;
   border: 2px solid $color-on-primary;
   border-radius: $corner-large;
+  box-shadow: $shadow-level-2;
 
   opacity: 0;
   transform: scale(0.95);
@@ -52,11 +53,23 @@
   }
 }
 
+.game-details-dialog__hero {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.game-details-dialog__cover {
+  width: 100%;
+  height: 220px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
 .game-details-dialog__close {
   position: absolute;
   top: $size-2;
   right: $size-2;
-  z-index: 1;
 
   display: flex;
   align-items: center;
@@ -67,6 +80,7 @@
   background-color: $color-white;
   border: none;
   border-radius: $corner-full;
+  box-shadow: $shadow-level-1;
   cursor: pointer;
 
   &:hover {
@@ -76,12 +90,222 @@
 
 .game-details-dialog__content {
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
   padding: $size-3;
 }
 
+.game-details-dialog__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $size-1;
+}
+
 .game-details-dialog__title {
+  flex: 1 1 auto;
+  min-width: 0;
   font-family: $font-family-inter;
   font-weight: $font-weight-bold;
   font-size: $font-size-headline-medium;
   color: $color-on-primary;
+}
+
+.game-details-dialog__rating,
+.game-details-dialog__likes {
+  display: flex;
+  align-items: center;
+  gap: $size-05;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-medium;
+  color: $color-on-primary;
+}
+
+.game-details-dialog__description {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-body-small;
+  color: $color-on-bg;
+  line-height: 1.5;
+}
+
+.game-details-dialog__badges {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $size-2;
+
+  @include tablet-up {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.game-details-dialog__badge {
+  display: flex;
+  flex-direction: column;
+  gap: $size-05;
+  padding: $size-1 $size-2;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-small;
+  box-shadow: $shadow-level-1;
+}
+
+.game-details-dialog__badge-label {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-label-medium;
+  color: $color-on-bg-low;
+}
+
+.game-details-dialog__badge-value {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-small;
+  color: $color-on-primary;
+}
+
+.game-details-dialog__actions {
+  display: flex;
+  gap: $size-2;
+}
+
+.game-details-dialog__play-btn {
+  flex: 1;
+  padding: $btn-medium-padding;
+
+  background-color: $color-primary;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-small;
+  box-shadow: $shadow-level-1;
+  color: $color-on-primary;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-small;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-primary-high;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.game-details-dialog__favorite-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $size-1;
+  padding: $btn-medium-padding;
+
+  background-color: $color-white;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-small;
+  box-shadow: $shadow-level-1;
+  color: $color-on-primary;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-small;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-surface;
+  }
+
+  &--active {
+    background-color: $color-secondary;
+    border-color: $color-like;
+    color: $color-like;
+  }
+
+  @include tablet-up {
+    flex: 1;
+  }
+}
+
+.game-details-dialog__favorite-text {
+  display: none;
+
+  @include tablet-up {
+    display: inline;
+  }
+}
+
+.game-details-dialog__records {
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
+  margin-top: $size-3;
+}
+
+.game-details-dialog__records-title {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-medium;
+  color: $color-on-primary;
+}
+
+.game-details-dialog__records-list {
+  display: flex;
+  flex-direction: column;
+  gap: $size-1;
+  list-style: none;
+}
+
+.game-details-dialog__record {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-2;
+  padding-bottom: $size-1;
+  border-bottom: 1px solid $color-outline;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.game-details-dialog__record-left {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+  min-width: 0;
+}
+
+.game-details-dialog__record-icon {
+  flex-shrink: 0;
+}
+
+.game-details-dialog__record-player {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-body-small;
+  color: $color-on-primary;
+}
+
+.game-details-dialog__record-right {
+  display: flex;
+  align-items: baseline;
+  gap: $size-2;
+  flex-shrink: 0;
+}
+
+.game-details-dialog__record-score {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-body-small;
+  color: $color-on-primary;
+}
+
+.game-details-dialog__record-time {
+  font-family: $font-family-inter;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-label-medium;
+  color: $color-on-bg-low;
 }
