@@ -1,5 +1,5 @@
 import './library-game-cards.scss';
-import { getGames, type Game } from '../../api/games';
+import { getGames, type Game, type GameFilters } from '../../api/games';
 import { categories } from '../../data/categories';
 import { formatLikesCount } from '../../utils/format-likes-count';
 import { createGameCardsSkeleton } from './library-game-cards-skeleton';
@@ -8,6 +8,11 @@ import { createEmptyState } from '../../components/empty-state/empty-state';
 import { showSnackbar } from '../../components/snackbar/snackbar';
 
 const GAMES_PER_PAGE = 6;
+
+interface LibraryGameCards {
+  element: HTMLElement;
+  load: (filters: GameFilters) => Promise<void>;
+}
 
 function getCategoryLabel(slug: string): string {
   const category = categories.find((item) => item.slug === slug);
@@ -52,15 +57,15 @@ function createList(games: Game[]): HTMLUListElement {
   return list;
 }
 
-export function renderLibraryGameCards(): HTMLElement {
+export function createLibraryGameCards(): LibraryGameCards {
   const section = document.createElement('section');
   section.className = 'library-game-cards';
 
-  async function loadGames(): Promise<void> {
+  async function load(filters: GameFilters): Promise<void> {
     section.replaceChildren(createGameCardsSkeleton());
 
     try {
-      const games = await getGames(GAMES_PER_PAGE);
+      const games = await getGames(filters, GAMES_PER_PAGE);
 
       if (games.length === 0) {
         section.replaceChildren(createEmptyState('No games found.'));
@@ -70,13 +75,11 @@ export function renderLibraryGameCards(): HTMLElement {
       section.replaceChildren(createList(games));
     } catch {
       section.replaceChildren(
-        createErrorBanner('Could not load games. Please try again.', loadGames),
+        createErrorBanner('Could not load games. Please try again.', () => load(filters)),
       );
       showSnackbar('Failed to load games.', 'error');
     }
   }
 
-  loadGames();
-
-  return section;
+  return { element: section, load };
 }

@@ -11,6 +11,11 @@ export interface Game {
   cardImage: string;
 }
 
+export interface GameFilters {
+  category: string;
+  sort: string;
+}
+
 interface GamesResponse {
   data: Game[];
 }
@@ -20,7 +25,13 @@ export async function getFeaturedGames(): Promise<Game[]> {
   return response.data;
 }
 
-export async function getGames(limit: number): Promise<Game[]> {
-  const response = await apiGet<GamesResponse>(`/api/games?limit=${limit}`);
+export async function getGames(filters: GameFilters, limit: number): Promise<Game[]> {
+  const query = new URLSearchParams({
+    category: filters.category,
+    sort: filters.sort,
+    limit: String(limit),
+  });
+
+  const response = await apiGet<GamesResponse>(`/api/games?${query.toString()}`);
   return response.data;
 }
