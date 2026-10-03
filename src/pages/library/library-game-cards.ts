@@ -1,7 +1,11 @@
 import './library-game-cards.scss';
-import { games } from '../../data/games';
+import { getGames, type Game } from '../../api/games';
 import { categories } from '../../data/categories';
 import { formatLikesCount } from '../../utils/format-likes-count';
+import { createGameCardsSkeleton } from './library-game-cards-skeleton';
+import { createErrorBanner } from '../../components/error-banner/error-banner';
+import { createEmptyState } from '../../components/empty-state/empty-state';
+import { showSnackbar } from '../../components/snackbar/snackbar';
 
 const GAMES_PER_PAGE = 6;
 
@@ -10,14 +14,11 @@ function getCategoryLabel(slug: string): string {
   return category ? category.label : slug;
 }
 
-export function renderLibraryGameCards(): HTMLElement {
-  const section = document.createElement('section');
-  section.className = 'library-game-cards';
-
+function createList(games: Game[]): HTMLUListElement {
   const list = document.createElement('ul');
   list.className = 'library-game-cards__list';
 
-  for (const game of games.slice(0, GAMES_PER_PAGE)) {
+  for (const game of games) {
     const item = document.createElement('li');
     item.className = 'library-game-cards__item';
 
@@ -48,6 +49,34 @@ export function renderLibraryGameCards(): HTMLElement {
     list.append(item);
   }
 
-  section.append(list);
+  return list;
+}
+
+export function renderLibraryGameCards(): HTMLElement {
+  const section = document.createElement('section');
+  section.className = 'library-game-cards';
+
+  async function loadGames(): Promise<void> {
+    section.replaceChildren(createGameCardsSkeleton());
+
+    try {
+      const games = await getGames(GAMES_PER_PAGE);
+
+      if (games.length === 0) {
+        section.replaceChildren(createEmptyState('No games found.'));
+        return;
+      }
+
+      section.replaceChildren(createList(games));
+    } catch {
+      section.replaceChildren(
+        createErrorBanner('Could not load games. Please try again.', loadGames),
+      );
+      showSnackbar('Failed to load games.', 'error');
+    }
+  }
+
+  loadGames();
+
   return section;
 }
