@@ -1,0 +1,48 @@
+@use '../../styles/tokens' as *;
+
+.snackbar-container {
+  position: fixed;
+  bottom: $size-3;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: $size-1;
+  width: max-content;
+  max-width: calc(100% - #{$size-4});
+  pointer-events: none;
+}
+
+.snackbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-2;
+  padding: $size-2;
+  border-radius: $corner-medium;
+  box-shadow: $shadow-level-1;
+  color: $color-white;
+  font-family: $font-family-inter;
+  font-size: $font-size-body-small;
+  font-weight: $font-weight-medium;
+  pointer-events: auto;
+
+  &--success {
+    background-color: $color-price-free;
+  }
+
+  &--error {
+    background-color: $color-error;
+  }
+
+  &__close {
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    font-size: $font-size-headline-small;
+    line-height: 1;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,21 @@
+@use '../../styles/tokens' as *;
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $size-5 $size-2;
+
+  background-color: $color-surface-low;
+  border: 2px dashed $color-outline-variant;
+  border-radius: $corner-large;
+  text-align: center;
+}
+
+.empty-state__message {
+  margin: 0;
+  font-family: $font-family-inter;
+  font-size: $font-size-body-medium;
+  font-weight: $font-weight-medium;
+  color: $color-on-bg-low;
+}
