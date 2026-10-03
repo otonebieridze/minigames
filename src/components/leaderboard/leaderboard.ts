@@ -1,62 +1,13 @@
 import './leaderboard.scss';
+import { getLeaderboard, type LeaderboardEntry } from '../../api/leaderboard';
+import { createLeaderboardSkeleton } from './leaderboard-skeleton';
+import { createErrorBanner } from '../error-banner/error-banner';
+import { createEmptyState } from '../empty-state/empty-state';
+import { showSnackbar } from '../snackbar/snackbar';
 
-interface LeaderboardEntry {
-  rank: number;
-  playerName: string;
-  initials: string;
-  gamesPlayed: number;
-  totalScore: number;
-  streakDays: number;
-  favoriteGameName: string;
+function getInitials(playerName: string): string {
+  return playerName.slice(0, 2).toUpperCase();
 }
-
-const leaderboard: LeaderboardEntry[] = [
-  {
-    rank: 1,
-    playerName: 'Alex_Pro99',
-    initials: 'AP',
-    gamesPlayed: 142,
-    totalScore: 94_250,
-    streakDays: 12,
-    favoriteGameName: 'Heartopia',
-  },
-  {
-    rank: 2,
-    playerName: 'CozyGamer_x',
-    initials: 'CG',
-    gamesPlayed: 118,
-    totalScore: 81_400,
-    streakDays: 8,
-    favoriteGameName: 'Cat Mail Co.',
-  },
-  {
-    rank: 3,
-    playerName: 'MatchMaster',
-    initials: 'MM',
-    gamesPlayed: 98,
-    totalScore: 72_110,
-    streakDays: 5,
-    favoriteGameName: 'Tiny Glade',
-  },
-  {
-    rank: 4,
-    playerName: 'BubblePop',
-    initials: 'BP',
-    gamesPlayed: 87,
-    totalScore: 65_900,
-    streakDays: 3,
-    favoriteGameName: 'Whisper of the House',
-  },
-  {
-    rank: 5,
-    playerName: 'SudokuGod',
-    initials: 'SG',
-    gamesPlayed: 74,
-    totalScore: 59_320,
-    streakDays: 2,
-    favoriteGameName: 'Cat Chess',
-  },
-];
 
 function formatCompactScore(score: number): string {
   return `${(score / 1000).toFixed(1)}K`;
@@ -70,7 +21,7 @@ function renderRow(entry: LeaderboardEntry): string {
     <tr class="leaderboard__row">
       <td class="leaderboard__cell leaderboard__cell--rank">#${entry.rank}</td>
       <td class="leaderboard__cell leaderboard__cell--player">
-        <span class="leaderboard__avatar">${entry.initials}</span>
+        <span class="leaderboard__avatar">${getInitials(entry.playerName)}</span>
         <span class="leaderboard__name">${entry.playerName}</span>
       </td>
       <td class="leaderboard__cell leaderboard__cell--games">${entry.gamesPlayed}</td>
@@ -89,6 +40,29 @@ function renderRow(entry: LeaderboardEntry): string {
   `;
 }
 
+function createTable(entries: LeaderboardEntry[]): HTMLTableElement {
+  const table = document.createElement('table');
+  table.className = 'leaderboard__table';
+
+  table.innerHTML = `
+    <thead>
+      <tr class="leaderboard__header-row">
+        <th class="leaderboard__heading leaderboard__heading--rank">Rank</th>
+        <th class="leaderboard__heading leaderboard__heading--player">Player</th>
+        <th class="leaderboard__heading leaderboard__heading--games">Games Played</th>
+        <th class="leaderboard__heading leaderboard__heading--score">Total Score</th>
+        <th class="leaderboard__heading leaderboard__heading--streak">Streak</th>
+        <th class="leaderboard__heading leaderboard__heading--favorite">Favorite Game</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${entries.map((entry) => renderRow(entry)).join('')}
+    </tbody>
+  `;
+
+  return table;
+}
+
 export function renderLeaderboard(): HTMLElement {
   const section = document.createElement('section');
   section.className = 'leaderboard';
@@ -102,23 +76,33 @@ export function renderLeaderboard(): HTMLElement {
         <span class="leaderboard__title-full">Top Players This Week</span>
       </h2>
     </div>
-
-    <table class="leaderboard__table">
-      <thead>
-        <tr class="leaderboard__header-row">
-          <th class="leaderboard__heading leaderboard__heading--rank">Rank</th>
-          <th class="leaderboard__heading leaderboard__heading--player">Player</th>
-          <th class="leaderboard__heading leaderboard__heading--games">Games Played</th>
-          <th class="leaderboard__heading leaderboard__heading--score">Total Score</th>
-          <th class="leaderboard__heading leaderboard__heading--streak">Streak</th>
-          <th class="leaderboard__heading leaderboard__heading--favorite">Favorite Game</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${leaderboard.map((entry) => renderRow(entry)).join('')}
-      </tbody>
-    </table>
   `;
+
+  const content = document.createElement('div');
+  content.className = 'leaderboard__content';
+  section.append(content);
+
+  async function loadLeaderboard(): Promise<void> {
+    content.replaceChildren(createLeaderboardSkeleton());
+
+    try {
+      const entries = await getLeaderboard();
+
+      if (entries.length === 0) {
+        content.replaceChildren(createEmptyState('No players found.'));
+        return;
+      }
+
+      content.replaceChildren(createTable(entries));
+    } catch {
+      content.replaceChildren(
+        createErrorBanner('Could not load top players. Please try again.', loadLeaderboard),
+      );
+      showSnackbar('Failed to load top players.', 'error');
+    }
+  }
+
+  loadLeaderboard();
 
   return section;
 }
