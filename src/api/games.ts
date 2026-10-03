@@ -19,3 +19,8 @@ export async function getFeaturedGames(): Promise<Game[]> {
   const response = await apiGet<GamesResponse>('/api/games?featured=true');
   return response.data;
 }
+
+export async function getGames(limit: number): Promise<Game[]> {
+  const response = await apiGet<GamesResponse>(`/api/games?limit=${limit}`);
+  return response.data;
+}
