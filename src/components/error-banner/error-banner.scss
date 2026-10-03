@@ -1,0 +1,40 @@
+@use '../../styles/tokens' as *;
+
+.error-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $size-2;
+  padding: $size-4 $size-2;
+
+  background-color: $color-white;
+  border: 2px solid $color-error;
+  border-radius: $corner-large;
+  text-align: center;
+}
+
+.error-banner__message {
+  margin: 0;
+  font-family: $font-family-inter;
+  font-size: $font-size-body-medium;
+  font-weight: $font-weight-medium;
+  color: $color-error;
+}
+
+.error-banner__retry {
+  padding: $btn-small-padding;
+
+  font-family: $font-family-inter;
+  font-size: $font-size-label-large;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+
+  background-color: $color-primary;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-small;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-primary-high;
+  }
+}
