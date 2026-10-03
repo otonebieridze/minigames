@@ -5,6 +5,10 @@ import arrowBackIcon from '../../assets/icons/arrow_back.png';
 import arrowForwardIcon from '../../assets/icons/arrow_forward.png';
 import { getFeaturedGames, type Game } from '../../api/games';
 import { formatLikesCount } from '../../utils/format-likes-count';
+import { createCarouselSkeleton } from './carousel-skeleton';
+import { createErrorBanner } from '../error-banner/error-banner';
+import { createEmptyState } from '../empty-state/empty-state';
+import { showSnackbar } from '../snackbar/snackbar';
 
 const AUTOPLAY_INTERVAL_MS = 4000;
 const SWIPE_THRESHOLD_PX = 40;
@@ -199,16 +203,30 @@ export function renderCarousel(): HTMLElement {
         </button>
       </div>
     </div>
-
-    <div class="carousel__content"></div>
   `;
 
-  const content = section.querySelector<HTMLElement>('.carousel__content');
-  if (!content) return section;
+  const content = document.createElement('div');
+  content.className = 'carousel__content';
+  section.append(content);
 
   async function loadGames(): Promise<void> {
-    const games = await getFeaturedGames();
-    content?.replaceChildren(createTrack(section, games));
+    content.replaceChildren(createCarouselSkeleton());
+
+    try {
+      const games = await getFeaturedGames();
+
+      if (games.length === 0) {
+        content.replaceChildren(createEmptyState('No new games found.'));
+        return;
+      }
+
+      content.replaceChildren(createTrack(section, games));
+    } catch {
+      content.replaceChildren(
+        createErrorBanner('Could not load new games. Please try again.', loadGames),
+      );
+      showSnackbar('Failed to load new games.', 'error');
+    }
   }
 
   loadGames();
