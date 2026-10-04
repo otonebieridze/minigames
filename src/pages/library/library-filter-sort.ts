@@ -9,7 +9,16 @@ import { showSnackbar } from '../../components/snackbar/snackbar';
 const sortOptions: string[] = ['Rating', 'Popularity', 'Newest', 'Price: Low to High'];
 const ACTIVE_CHIP_CLASS = 'library-filter-sort__chip--active';
 
-function createChips(categories: Category[]): HTMLButtonElement[] {
+interface FilterSortHandlers {
+  onDefaultCategory: (slug: string) => void;
+  onCategoryChange: (slug: string) => void;
+  onCategoriesFailed: () => void;
+}
+
+function createChips(
+  categories: Category[],
+  onCategoryChange: (slug: string) => void,
+): HTMLButtonElement[] {
   const chips = categories.map((category) => {
     const chip = document.createElement('button');
     chip.type = 'button';
@@ -30,13 +39,14 @@ function createChips(categories: Category[]): HTMLButtonElement[] {
         otherChip.classList.remove(ACTIVE_CHIP_CLASS);
       }
       chip.classList.add(ACTIVE_CHIP_CLASS);
+      onCategoryChange(chip.dataset.slug ?? '');
     });
   }
 
   return chips;
 }
 
-export function renderLibraryFilterSort(): HTMLElement {
+export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLElement {
   const section = document.createElement('div');
   section.className = 'library-filter-sort';
 
@@ -77,15 +87,20 @@ export function renderLibraryFilterSort(): HTMLElement {
 
       if (categories.length === 0) {
         chipsContainer.replaceChildren(createEmptyState('No categories found.'));
+        handlers.onCategoriesFailed();
         return;
       }
 
-      chipsContainer.replaceChildren(...createChips(categories));
+      chipsContainer.replaceChildren(...createChips(categories, handlers.onCategoryChange));
+
+      const defaultCategory = categories.find((category) => category.isDefault);
+      handlers.onDefaultCategory(defaultCategory ? defaultCategory.slug : categories[0].slug);
     } catch {
       chipsContainer.replaceChildren(
         createErrorBanner('Could not load categories. Please try again.', loadCategories),
       );
       showSnackbar('Failed to load categories.', 'error');
+      handlers.onCategoriesFailed();
     }
   }
 
