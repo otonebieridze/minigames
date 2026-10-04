@@ -3,17 +3,23 @@ import chevronBackIcon from '../../assets/icons/chevron_backward.png';
 import chevronForwardIcon from '../../assets/icons/chevron_forward.png';
 
 const BREAKPOINT_TABLET_PX = 768;
-const TOTAL_PAGES = 4;
+const FIRST_PAGE = 1;
 const MAX_VISIBLE_TABLET_UP = 4;
 const MAX_VISIBLE_MOBILE = 3;
 const TABLET_UP_QUERY = `(min-width: ${BREAKPOINT_TABLET_PX}px)`;
 
-export function renderLibraryPagination(): HTMLElement {
+interface LibraryPagination {
+  element: HTMLElement;
+  update: (page: number, totalPages: number) => void;
+}
+
+export function createLibraryPagination(onPageChange: (page: number) => void): LibraryPagination {
   const nav = document.createElement('nav');
   nav.className = 'library-pagination';
   nav.setAttribute('aria-label', 'Library pagination');
 
-  let currentPage = 1;
+  let currentPage = FIRST_PAGE;
+  let totalPages = FIRST_PAGE;
 
   const previousButton = document.createElement('button');
   previousButton.type = 'button';
@@ -39,10 +45,10 @@ export function renderLibraryPagination(): HTMLElement {
   }
 
   function getVisibleRange(): number[] {
-    const maxVisible = Math.min(getMaxVisible(), TOTAL_PAGES);
-    const lastPossibleStart = TOTAL_PAGES - maxVisible + 1;
+    const maxVisible = Math.min(getMaxVisible(), totalPages);
+    const lastPossibleStart = totalPages - maxVisible + 1;
     const centeredStart = currentPage - Math.floor(maxVisible / 2);
-    const start = Math.max(1, Math.min(centeredStart, lastPossibleStart));
+    const start = Math.max(FIRST_PAGE, Math.min(centeredStart, lastPossibleStart));
     return Array.from({ length: maxVisible }, (_, index) => start + index);
   }
 
@@ -62,33 +68,37 @@ export function renderLibraryPagination(): HTMLElement {
       }
 
       pageButton.addEventListener('click', () => {
-        currentPage = page;
-        render();
+        if (page === currentPage) return;
+        onPageChange(page);
       });
 
       item.append(pageButton);
       pagesList.append(item);
     }
 
-    previousButton.disabled = currentPage === 1;
-    nextButton.disabled = currentPage === TOTAL_PAGES;
+    previousButton.disabled = currentPage <= FIRST_PAGE;
+    nextButton.disabled = currentPage >= totalPages;
   }
 
   previousButton.addEventListener('click', () => {
-    if (currentPage <= 1) return;
-    currentPage -= 1;
-    render();
+    if (currentPage <= FIRST_PAGE) return;
+    onPageChange(currentPage - 1);
   });
 
   nextButton.addEventListener('click', () => {
-    if (currentPage >= TOTAL_PAGES) return;
-    currentPage += 1;
-    render();
+    if (currentPage >= totalPages) return;
+    onPageChange(currentPage + 1);
   });
+
+  function update(page: number, pages: number): void {
+    currentPage = Math.max(page, FIRST_PAGE);
+    totalPages = Math.max(pages, FIRST_PAGE);
+    render();
+  }
 
   globalThis.addEventListener('resize', render);
 
   render();
 
-  return nav;
+  return { element: nav, update };
 }

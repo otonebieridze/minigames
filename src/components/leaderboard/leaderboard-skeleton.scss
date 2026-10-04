@@ -1,0 +1,37 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.leaderboard-skeleton {
+  display: flex;
+  flex-direction: column;
+
+  background-color: $color-white;
+  border: $border-width-thick solid $color-on-primary;
+  border-radius: $corner-large;
+  box-shadow: $shadow-level-1;
+  overflow: hidden;
+
+  @include desktop-up {
+    box-shadow: $shadow-level-2;
+  }
+}
+
+.leaderboard-skeleton__row {
+  height: $size-7;
+
+  &:not(:last-child) {
+    border-bottom: $border-width-thin solid $color-outline;
+  }
+
+  @include desktop-up {
+    height: $size-8;
+  }
+
+  &:nth-child(n + 5) {
+    display: none;
+
+    @include wide-up {
+      display: block;
+    }
+  }
+}

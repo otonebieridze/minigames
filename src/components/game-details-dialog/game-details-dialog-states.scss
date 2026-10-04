@@ -1,0 +1,50 @@
+@use '../../styles/tokens' as *;
+
+.game-details-dialog__body {
+  display: contents;
+}
+
+.game-details-dialog__state {
+  padding: $size-8 $size-3 $size-3;
+}
+
+.game-details-skeleton__hero {
+  height: $size-15 * 2;
+}
+
+.game-details-skeleton__content {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  padding: $size-3;
+}
+
+.game-details-skeleton__line {
+  height: $size-3;
+  border-radius: $corner-small;
+
+  &--title {
+    width: 60%;
+    height: $size-4;
+  }
+
+  &--short {
+    width: 40%;
+  }
+}
+
+.comments-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+}
+
+.comments-skeleton__item {
+  height: $size-12;
+  border: $border-width-medium solid $color-on-primary;
+  border-radius: $corner-large;
+}
+
+.game-details-dialog__comment-like.game-details-dialog__comment-like--readonly {
+  cursor: default;
+}

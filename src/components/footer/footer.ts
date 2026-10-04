@@ -13,7 +13,7 @@ export function renderFooter(): HTMLElement {
   footer.innerHTML = `
     <div class="footer__top">
       <div class="footer__brand">
-        <a href="#/" class="footer__logo">
+        <a href="/" class="footer__logo">
           <img src="${logoIcon}" alt="" width="32" height="32" />
           <span>MiniGames</span>
         </a>
@@ -26,30 +26,30 @@ export function renderFooter(): HTMLElement {
       <div class="footer__nav-groups">
         <div class="footer__col">
           <p class="footer__heading">Explore</p>
-          <a href="#/" class="footer__link">Home</a>
-          <a href="#/library" class="footer__link">Library</a>
-          <a href="#/" class="footer__link">Categories</a>
-          <a href="#/" class="footer__link">Tournaments</a>
+          <a href="/" class="footer__link">Home</a>
+          <a href="/library" class="footer__link">Library</a>
+          <a href="/" class="footer__link">Categories</a>
+          <a href="/" class="footer__link">Tournaments</a>
         </div>
 
         <div class="footer__col">
           <p class="footer__heading">Company</p>
-          <a href="#/" class="footer__link">About Us</a>
-          <a href="#/" class="footer__link">Contact</a>
-          <a href="#/" class="footer__link">Privacy Policy</a>
-          <a href="#/" class="footer__link">Terms of Service</a>
+          <a href="/" class="footer__link">About Us</a>
+          <a href="/" class="footer__link">Contact</a>
+          <a href="/" class="footer__link">Privacy Policy</a>
+          <a href="/" class="footer__link">Terms of Service</a>
         </div>
 
         <div class="footer__community">
           <p class="footer__heading">Community</p>
           <div class="footer__social">
-            <a href="#/" class="footer__social-link" aria-label="Share">
+            <a href="/" class="footer__social-link" aria-label="Share">
               <img src="${shareIcon}" alt="" width="40" height="40" />
             </a>
-            <a href="#/" class="footer__social-link" aria-label="Chat">
+            <a href="/" class="footer__social-link" aria-label="Chat">
               <img src="${chatIcon}" alt="" width="40" height="40" />
             </a>
-            <a href="#/" class="footer__social-link" aria-label="RSS feed">
+            <a href="/" class="footer__social-link" aria-label="RSS feed">
               <img src="${rssIcon}" alt="" width="40" height="40" />
             </a>
           </div>

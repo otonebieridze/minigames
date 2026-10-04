@@ -3,11 +3,13 @@ import starIcon from '../../assets/icons/star.png';
 import favoriteIcon from '../../assets/icons/favorite.png';
 import arrowBackIcon from '../../assets/icons/arrow_back.png';
 import arrowForwardIcon from '../../assets/icons/arrow_forward.png';
-import { games } from '../../data/games';
+import { getFeaturedGames, type Game } from '../../api/games';
 import { formatLikesCount } from '../../utils/format-likes-count';
-
-const featuredGames = games.filter((game) => game.featured);
-const TOTAL_CARDS = featuredGames.length;
+import { createCarouselSkeleton } from './carousel-skeleton';
+import { createErrorBanner } from '../error-banner/error-banner';
+import { createEmptyState } from '../empty-state/empty-state';
+import { showSnackbar } from '../snackbar/snackbar';
+import { setUrlParameter } from '../../app/url-parameters';
 
 const AUTOPLAY_INTERVAL_MS = 4000;
 const SWIPE_THRESHOLD_PX = 40;
@@ -26,37 +28,15 @@ function getRoleClass(distance: number): string {
   return Math.abs(distance) === 2 ? 'carousel__card--edge' : 'carousel__card--hidden';
 }
 
-export function renderCarousel(): HTMLElement {
-  const section = document.createElement('section');
-  section.className = 'carousel';
-  section.setAttribute('aria-label', 'New Games');
+function createTrack(section: HTMLElement, games: Game[]): HTMLUListElement {
+  const track = document.createElement('ul');
+  track.className = 'carousel__track';
 
-  section.innerHTML = `
-    <div class="carousel__header">
-      <div class="carousel__title-group">
-        <span class="carousel__accent-bar" aria-hidden="true"></span>
-        <h2 class="carousel__title">New Games</h2>
-      </div>
-      <div class="carousel__nav">
-        <button type="button" class="carousel__arrow" data-direction="prev" aria-label="Previous games">
-          <img src="${arrowBackIcon}" alt="" width="20" height="20" />
-        </button>
-        <button type="button" class="carousel__arrow" data-direction="next" aria-label="Next games">
-          <img src="${arrowForwardIcon}" alt="" width="20" height="20" />
-        </button>
-      </div>
-    </div>
-
-    <ul class="carousel__track"></ul>
-  `;
-
-  const track = section.querySelector<HTMLUListElement>('.carousel__track');
-  if (!track) return section;
-
+  const totalCards = games.length;
   let currentIndex = 0;
   let shouldSuppressClick = false;
 
-  const cardElements = featuredGames.map((game) => {
+  const cardElements = games.map((game) => {
     const item = document.createElement('li');
     item.innerHTML = `
       <img src="${game.cardImage}" alt="${game.name}" class="carousel__card-image" />
@@ -79,7 +59,7 @@ export function renderCarousel(): HTMLElement {
 
     item.addEventListener('click', () => {
       if (shouldSuppressClick) return;
-      document.dispatchEvent(new CustomEvent('open-game-details'));
+      setUrlParameter('game', game.slug);
     });
 
     track.append(item);
@@ -88,19 +68,19 @@ export function renderCarousel(): HTMLElement {
 
   function updateRoles(): void {
     for (const [index, card] of cardElements.entries()) {
-      const distance = getSignedDistance(index, currentIndex, TOTAL_CARDS);
+      const distance = getSignedDistance(index, currentIndex, totalCards);
       card.className = ['carousel__card', getRoleClass(distance)].filter(Boolean).join(' ');
       card.style.order = String(distance);
     }
   }
 
   function goToNext(): void {
-    currentIndex = (currentIndex + 1) % TOTAL_CARDS;
+    currentIndex = (currentIndex + 1) % totalCards;
     updateRoles();
   }
 
   function goToPrevious(): void {
-    currentIndex = (currentIndex - 1 + TOTAL_CARDS) % TOTAL_CARDS;
+    currentIndex = (currentIndex - 1 + totalCards) % totalCards;
     updateRoles();
   }
 
@@ -200,6 +180,57 @@ export function renderCarousel(): HTMLElement {
   track.addEventListener('pointerup', endPointerInteraction);
   track.addEventListener('pointerleave', endPointerInteraction);
   track.addEventListener('pointercancel', endPointerInteraction);
+
+  return track;
+}
+
+export function renderCarousel(): HTMLElement {
+  const section = document.createElement('section');
+  section.className = 'carousel';
+  section.setAttribute('aria-label', 'New Games');
+
+  section.innerHTML = `
+    <div class="carousel__header">
+      <div class="carousel__title-group">
+        <span class="carousel__accent-bar" aria-hidden="true"></span>
+        <h2 class="carousel__title">New Games</h2>
+      </div>
+      <div class="carousel__nav">
+        <button type="button" class="carousel__arrow" data-direction="prev" aria-label="Previous games">
+          <img src="${arrowBackIcon}" alt="" width="20" height="20" />
+        </button>
+        <button type="button" class="carousel__arrow" data-direction="next" aria-label="Next games">
+          <img src="${arrowForwardIcon}" alt="" width="20" height="20" />
+        </button>
+      </div>
+    </div>
+  `;
+
+  const content = document.createElement('div');
+  content.className = 'carousel__content';
+  section.append(content);
+
+  async function loadGames(): Promise<void> {
+    content.replaceChildren(createCarouselSkeleton());
+
+    try {
+      const games = await getFeaturedGames();
+
+      if (games.length === 0) {
+        content.replaceChildren(createEmptyState('No new games found.'));
+        return;
+      }
+
+      content.replaceChildren(createTrack(section, games));
+    } catch {
+      content.replaceChildren(
+        createErrorBanner('Could not load new games. Please try again.', loadGames),
+      );
+      showSnackbar('Failed to load new games.', 'error');
+    }
+  }
+
+  loadGames();
 
   return section;
 }
