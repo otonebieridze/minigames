@@ -9,6 +9,8 @@ import recordIcon1 from '../../assets/icons/record-icon-1.png';
 import recordIcon2 from '../../assets/icons/record-icon-2.png';
 import recordIcon3 from '../../assets/icons/record-icon-3.png';
 import { getGameDetails, type GameDetails } from '../../api/game-details';
+import { onUrlChange } from '../../app/router';
+import { getUrlParameter, setUrlParameter } from '../../app/url-parameters';
 import { formatLikesCount } from '../../utils/format-likes-count';
 import { formatTimeAgo } from '../../utils/format-time-ago';
 import { createGameDetailsSkeleton } from './game-details-skeleton';
@@ -19,16 +21,11 @@ import { showSnackbar } from '../snackbar/snackbar';
 
 interface GameDetailsDialog {
   element: HTMLElement;
-  open: (slug: string) => void;
-  close: () => void;
-}
-
-interface OpenGameDetailsEventDetail {
-  slug: string;
 }
 
 const recordIcons = [recordIcon1, recordIcon2, recordIcon3];
 const FAVORITE_ACTIVE_CLASS = 'game-details-dialog__favorite-btn--active';
+const GAME_PARAMETER = 'game';
 
 function createBadgesHtml(details: GameDetails): string {
   const badges = [
@@ -145,6 +142,10 @@ function createContent(details: GameDetails): HTMLElement[] {
   return [hero, content];
 }
 
+function requestClose(): void {
+  setUrlParameter(GAME_PARAMETER, undefined);
+}
+
 export function createGameDetailsDialog(): GameDetailsDialog {
   const backdrop = document.createElement('div');
   backdrop.className = 'game-details-backdrop';
@@ -167,6 +168,8 @@ export function createGameDetailsDialog(): GameDetailsDialog {
   dialog.append(body, closeButton);
   backdrop.append(dialog);
 
+  let openedSlug: string | undefined;
+
   async function loadDetails(slug: string): Promise<void> {
     body.replaceChildren(createGameDetailsSkeleton());
 
@@ -186,35 +189,49 @@ export function createGameDetailsDialog(): GameDetailsDialog {
     }
   }
 
-  function open(slug: string): void {
+  function show(slug: string): void {
+    if (openedSlug === slug) return;
+
+    openedSlug = slug;
     loadDetails(slug);
     backdrop.classList.add('game-details-backdrop--open');
     document.body.style.overflow = 'hidden';
   }
 
-  function close(): void {
+  function hide(): void {
+    if (openedSlug === undefined) return;
+
+    openedSlug = undefined;
     backdrop.classList.remove('game-details-backdrop--open');
     document.body.style.overflow = '';
   }
 
-  closeButton.addEventListener('click', close);
+  function syncWithUrl(): void {
+    const slug = getUrlParameter(GAME_PARAMETER);
+
+    if (slug) {
+      show(slug);
+    } else {
+      hide();
+    }
+  }
+
+  closeButton.addEventListener('click', requestClose);
 
   backdrop.addEventListener('click', (event) => {
     if (event.target === backdrop) {
-      close();
+      requestClose();
     }
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
-      close();
+      requestClose();
     }
   });
 
-  document.addEventListener('open-game-details', (event) => {
-    const { slug } = (event as CustomEvent<OpenGameDetailsEventDetail>).detail;
-    open(slug);
-  });
+  onUrlChange(syncWithUrl);
+  syncWithUrl();
 
-  return { element: backdrop, open, close };
+  return { element: backdrop };
 }

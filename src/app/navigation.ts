@@ -1,3 +1,4 @@
 export function getCurrentPath(): string {
-  return globalThis.location.hash.slice(1) || '/';
+  const path = globalThis.location.pathname;
+  return path === '/home' ? '/' : path;
 }

@@ -4,6 +4,10 @@ import hamburgerIcon from '../../assets/icons/hamburger.png';
 import { createMobileNav } from '../mobile-nav/mobile-nav';
 import { createAuthDialog } from '../auth-dialog/auth-dialog';
 import { getCurrentPath } from '../../app/navigation';
+import { onUrlChange } from '../../app/router';
+import { setUrlParameter } from '../../app/url-parameters';
+
+const AUTH_PARAMETER = 'auth';
 
 export function renderHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -11,17 +15,17 @@ export function renderHeader(): HTMLElement {
 
   header.innerHTML = `
     <div class="header__inner">
-      <a href="#/" class="header__logo">
+      <a href="/" class="header__logo">
         <img src="${logoIcon}" alt="" class="header__logo-icon" width="32" height="32" />
         <span class="header__logo-text">MiniGames</span>
       </a>
 
       <div class="header__right">
         <nav class="header__nav" aria-label="Main navigation">
-          <a href="#/" class="header__nav-link" data-path="/">Home</a>
-          <a href="#/library" class="header__nav-link" data-path="/library">Library</a>
-          <a href="#/" class="header__nav-link">Tournaments</a>
-          <a href="#/" class="header__nav-link">Community</a>
+          <a href="/" class="header__nav-link" data-path="/">Home</a>
+          <a href="/library" class="header__nav-link" data-path="/library">Library</a>
+          <a href="/" class="header__nav-link">Tournaments</a>
+          <a href="/" class="header__nav-link">Community</a>
         </nav>
 
         <div class="header__actions">
@@ -48,8 +52,8 @@ export function renderHeader(): HTMLElement {
 
   const loginButton = header.querySelector<HTMLButtonElement>('.header__login-btn');
   const signupButton = header.querySelector<HTMLButtonElement>('.header__signup-btn');
-  loginButton?.addEventListener('click', () => authDialog.open('login'));
-  signupButton?.addEventListener('click', () => authDialog.open('register'));
+  loginButton?.addEventListener('click', () => setUrlParameter(AUTH_PARAMETER, 'login'));
+  signupButton?.addEventListener('click', () => setUrlParameter(AUTH_PARAMETER, 'register'));
 
   const mobileLoginButton =
     mobileNav.element.querySelector<HTMLButtonElement>('.mobile-nav__login-btn');
@@ -57,11 +61,11 @@ export function renderHeader(): HTMLElement {
     mobileNav.element.querySelector<HTMLButtonElement>('.mobile-nav__signup-btn');
   mobileLoginButton?.addEventListener('click', () => {
     mobileNav.close();
-    authDialog.open('login');
+    setUrlParameter(AUTH_PARAMETER, 'login');
   });
   mobileSignupButton?.addEventListener('click', () => {
     mobileNav.close();
-    authDialog.open('register');
+    setUrlParameter(AUTH_PARAMETER, 'register');
   });
 
   const navLinks = header.querySelectorAll<HTMLAnchorElement>('.header__nav-link[data-path]');
@@ -74,7 +78,7 @@ export function renderHeader(): HTMLElement {
   }
 
   updateActiveLink();
-  globalThis.addEventListener('hashchange', updateActiveLink);
+  onUrlChange(updateActiveLink);
 
   return header;
 }

@@ -19,5 +19,6 @@ document.body.append(gameDetailsDialog.element);
 
 createRouter(main, [
   { path: '/', render: renderHomePage },
+  { path: '/home', render: renderHomePage },
   { path: '/library', render: renderLibraryPage },
 ]);

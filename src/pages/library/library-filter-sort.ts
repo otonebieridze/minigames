@@ -24,45 +24,33 @@ const ACTIVE_CHIP_CLASS = 'library-filter-sort__chip--active';
 const ACTIVE_SORT_OPTION_CLASS = 'library-filter-sort__sort-option--active';
 
 interface FilterSortHandlers {
-  onCategoriesLoaded: (categories: Category[]) => void;
-  onDefaultCategory: (slug: string) => void;
-  onCategoryChange: (slug: string) => void;
+  onCategoriesReady: (categories: Category[]) => void;
   onCategoriesFailed: () => void;
+  onCategoryChange: (slug: string) => void;
   onSortChange: (value: string) => void;
+}
+
+interface LibraryFilterSort {
+  element: HTMLElement;
+  setActive: (category: string, sort: string) => void;
 }
 
 function createChips(
   categories: Category[],
   onCategoryChange: (slug: string) => void,
 ): HTMLButtonElement[] {
-  const chips = categories.map((category) => {
+  return categories.map((category) => {
     const chip = document.createElement('button');
     chip.type = 'button';
     chip.className = 'library-filter-sort__chip';
     chip.dataset.slug = category.slug;
     chip.textContent = category.label;
-
-    if (category.isDefault) {
-      chip.classList.add(ACTIVE_CHIP_CLASS);
-    }
-
+    chip.addEventListener('click', () => onCategoryChange(category.slug));
     return chip;
   });
-
-  for (const chip of chips) {
-    chip.addEventListener('click', () => {
-      for (const otherChip of chips) {
-        otherChip.classList.remove(ACTIVE_CHIP_CLASS);
-      }
-      chip.classList.add(ACTIVE_CHIP_CLASS);
-      onCategoryChange(chip.dataset.slug ?? '');
-    });
-  }
-
-  return chips;
 }
 
-export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLElement {
+export function renderLibraryFilterSort(handlers: FilterSortHandlers): LibraryFilterSort {
   const section = document.createElement('div');
   section.className = 'library-filter-sort';
 
@@ -108,10 +96,7 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
       }
 
       chipsContainer.replaceChildren(...createChips(categories, handlers.onCategoryChange));
-
-      const defaultCategory = categories.find((category) => category.isDefault);
-      handlers.onCategoriesLoaded(categories);
-      handlers.onDefaultCategory(defaultCategory ? defaultCategory.slug : categories[0].slug);
+      handlers.onCategoriesReady(categories);
     } catch {
       chipsContainer.replaceChildren(
         createErrorBanner('Could not load categories. Please try again.', loadCategories),
@@ -130,6 +115,22 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
     '.library-filter-sort__sort-option',
   );
 
+  function setActive(category: string, sort: string): void {
+    const chips = chipsContainer.querySelectorAll<HTMLButtonElement>('.library-filter-sort__chip');
+    for (const chip of chips) {
+      chip.classList.toggle(ACTIVE_CHIP_CLASS, chip.dataset.slug === category);
+    }
+
+    for (const optionButton of sortOptionButtons) {
+      const isActive = optionButton.dataset.value === sort;
+      optionButton.classList.toggle(ACTIVE_SORT_OPTION_CLASS, isActive);
+
+      if (isActive && sortLabel) {
+        sortLabel.textContent = `Sort by: ${optionButton.dataset.label}`;
+      }
+    }
+  }
+
   function closeSortList(): void {
     sortWrapper?.classList.remove('library-filter-sort__sort--open');
     sortToggle?.setAttribute('aria-expanded', 'false');
@@ -142,13 +143,6 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
 
   for (const optionButton of sortOptionButtons) {
     optionButton.addEventListener('click', () => {
-      if (sortLabel) {
-        sortLabel.textContent = `Sort by: ${optionButton.dataset.label}`;
-      }
-      for (const otherOption of sortOptionButtons) {
-        otherOption.classList.remove(ACTIVE_SORT_OPTION_CLASS);
-      }
-      optionButton.classList.add(ACTIVE_SORT_OPTION_CLASS);
       closeSortList();
       handlers.onSortChange(optionButton.dataset.value ?? DEFAULT_SORT);
     });
@@ -165,5 +159,5 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
   }
   document.addEventListener('click', handleOutsideClick);
 
-  return section;
+  return { element: section, setActive };
 }
