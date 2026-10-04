@@ -1,5 +1,5 @@
 import { renderLibraryTitle } from './library-title';
-import { renderLibraryFilterSort } from './library-filter-sort';
+import { renderLibraryFilterSort, DEFAULT_SORT } from './library-filter-sort';
 import { createLibraryGameCards } from './library-game-cards';
 import { renderLibraryPagination } from './library-pagination';
 import type { GameFilters } from '../../api/games';
@@ -7,11 +7,16 @@ import type { GameFilters } from '../../api/games';
 const FALLBACK_CATEGORY = 'all';
 
 export function renderLibraryPage(container: HTMLElement): void {
-  const filters: GameFilters = { category: FALLBACK_CATEGORY, sort: 'rating-desc' };
+  const filters: GameFilters = { category: FALLBACK_CATEGORY, sort: DEFAULT_SORT };
   const gameCards = createLibraryGameCards();
 
   function loadWithCategory(slug: string): void {
     filters.category = slug;
+    gameCards.load(filters);
+  }
+
+  function loadWithSort(sort: string): void {
+    filters.sort = sort;
     gameCards.load(filters);
   }
 
@@ -23,6 +28,7 @@ export function renderLibraryPage(container: HTMLElement): void {
       onDefaultCategory: loadWithCategory,
       onCategoryChange: loadWithCategory,
       onCategoriesFailed: () => loadWithCategory(FALLBACK_CATEGORY),
+      onSortChange: loadWithSort,
     }),
     gameCards.element,
     renderLibraryPagination(),

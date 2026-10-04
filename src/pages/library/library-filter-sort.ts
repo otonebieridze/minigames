@@ -28,6 +28,7 @@ interface FilterSortHandlers {
   onDefaultCategory: (slug: string) => void;
   onCategoryChange: (slug: string) => void;
   onCategoriesFailed: () => void;
+  onSortChange: (value: string) => void;
 }
 
 function createChips(
@@ -149,6 +150,7 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
       }
       optionButton.classList.add(ACTIVE_SORT_OPTION_CLASS);
       closeSortList();
+      handlers.onSortChange(optionButton.dataset.value ?? DEFAULT_SORT);
     });
   }
 
