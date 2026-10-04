@@ -24,12 +24,12 @@ export function renderLibraryPage(container: HTMLElement): void {
 
   function loadWithCategory(slug: string): void {
     filters.category = slug;
-    gameCards.load(filters);
+    loadWithPage(FIRST_PAGE);
   }
 
   function loadWithSort(sort: string): void {
     filters.sort = sort;
-    gameCards.load(filters);
+    loadWithPage(FIRST_PAGE);
   }
 
   container.className = 'library-page';
