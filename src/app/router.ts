@@ -7,10 +7,14 @@ interface NavigateOptions {
   replace?: boolean;
 }
 
-const listeners: (() => void)[] = [];
+const listeners = new Set<() => void>();
 
-export function onUrlChange(listener: () => void): void {
-  listeners.push(listener);
+export function onUrlChange(listener: () => void): () => void {
+  listeners.add(listener);
+
+  return () => {
+    listeners.delete(listener);
+  };
 }
 
 function notifyUrlChange(): void {
