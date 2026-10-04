@@ -1,9 +1,9 @@
-@use '../../styles//tokens.scss' as *;
+@use '../../styles/tokens.scss' as *;
 
 .skeleton {
   background: linear-gradient(90deg, $color-outline 25%, $color-bg 50%, $color-outline 75%);
   background-size: 200% 100%;
-  animation: skeleton-shimmer 1.5s linear infinite;
+  animation: skeleton-shimmer $skeleton-shimmer-duration linear infinite;
 }
 
 @keyframes skeleton-shimmer {

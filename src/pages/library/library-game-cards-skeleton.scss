@@ -2,13 +2,13 @@
 @use '../../styles/mixins' as *;
 
 .game-card-skeleton {
-  height: 360px;
+  height: $size-15 * 3;
 
-  border: 2px solid $color-on-primary;
+  border: $border-width-medium solid $color-on-primary;
   border-radius: $corner-large;
   box-shadow: $shadow-level-2;
 
   @include tablet-up {
-    height: 200px;
+    height: $size-12 * 2;
   }
 }

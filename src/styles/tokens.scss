@@ -114,3 +114,23 @@ $btn-icon-padding: 8px;
 $shadow-level-1: 4px 4px 0 $color-on-primary;
 $shadow-level-2: 6px 6px 0 $color-on-primary;
 $shadow-level-3: 8px 8px 0 $color-on-primary;
+
+// =============================================
+// Border Width Tokens
+// =============================================
+
+$border-width-thin: 1px;
+$border-width-medium: 2px;
+$border-width-thick: 2.5px;
+
+// =============================================
+// Layer Tokens
+// =============================================
+
+$z-index-snackbar: 1000;
+
+// =============================================
+// Animation Tokens
+// =============================================
+
+$skeleton-shimmer-duration: 1.5s;

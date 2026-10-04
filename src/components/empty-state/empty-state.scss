@@ -7,7 +7,7 @@
   padding: $size-5 $size-2;
 
   background-color: $color-surface-low;
-  border: 2px dashed $color-outline-variant;
+  border: $border-width-medium dashed $color-outline-variant;
   border-radius: $corner-large;
   text-align: center;
 }

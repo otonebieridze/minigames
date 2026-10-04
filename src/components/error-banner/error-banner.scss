@@ -8,7 +8,7 @@
   padding: $size-4 $size-2;
 
   background-color: $color-white;
-  border: 2px solid $color-error;
+  border: $border-width-medium solid $color-error;
   border-radius: $corner-large;
   text-align: center;
 }
@@ -30,7 +30,7 @@
   color: $color-on-primary;
 
   background-color: $color-primary;
-  border: 2px solid $color-on-primary;
+  border: $border-width-medium solid $color-on-primary;
   border-radius: $corner-small;
   cursor: pointer;
 

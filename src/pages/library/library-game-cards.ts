@@ -1,6 +1,6 @@
 import './library-game-cards.scss';
-import { getGames, type Game } from '../../api/games';
-import { categories } from '../../data/categories';
+import { getGames, type Game, type GameFilters } from '../../api/games';
+import type { Category } from '../../api/categories';
 import { formatLikesCount } from '../../utils/format-likes-count';
 import { createGameCardsSkeleton } from './library-game-cards-skeleton';
 import { createErrorBanner } from '../../components/error-banner/error-banner';
@@ -9,12 +9,18 @@ import { showSnackbar } from '../../components/snackbar/snackbar';
 
 const GAMES_PER_PAGE = 6;
 
-function getCategoryLabel(slug: string): string {
+interface LibraryGameCards {
+  element: HTMLElement;
+  load: (filters: GameFilters) => Promise<void>;
+  setCategories: (categories: Category[]) => void;
+}
+
+function getCategoryLabel(categories: Category[], slug: string): string {
   const category = categories.find((item) => item.slug === slug);
   return category ? category.label : slug;
 }
 
-function createList(games: Game[]): HTMLUListElement {
+function createList(games: Game[], categories: Category[]): HTMLUListElement {
   const list = document.createElement('ul');
   list.className = 'library-game-cards__list';
 
@@ -28,7 +34,7 @@ function createList(games: Game[]): HTMLUListElement {
         <div class="game-card__content">
           <div class="game-card__title-row">
             <h3 class="game-card__title">${game.name}</h3>
-            <span class="game-card__badge">${getCategoryLabel(game.category)}</span>
+            <span class="game-card__badge">${getCategoryLabel(categories, game.category)}</span>
           </div>
           <span class="game-card__price">${game.price}</span>
           <p class="game-card__description">${game.shortDescription}</p>
@@ -52,31 +58,35 @@ function createList(games: Game[]): HTMLUListElement {
   return list;
 }
 
-export function renderLibraryGameCards(): HTMLElement {
+export function createLibraryGameCards(): LibraryGameCards {
   const section = document.createElement('section');
   section.className = 'library-game-cards';
 
-  async function loadGames(): Promise<void> {
+  let loadedCategories: Category[] = [];
+
+  function setCategories(categories: Category[]): void {
+    loadedCategories = categories;
+  }
+
+  async function load(filters: GameFilters): Promise<void> {
     section.replaceChildren(createGameCardsSkeleton());
 
     try {
-      const games = await getGames(GAMES_PER_PAGE);
+      const games = await getGames(filters, GAMES_PER_PAGE);
 
       if (games.length === 0) {
         section.replaceChildren(createEmptyState('No games found.'));
         return;
       }
 
-      section.replaceChildren(createList(games));
+      section.replaceChildren(createList(games, loadedCategories));
     } catch {
       section.replaceChildren(
-        createErrorBanner('Could not load games. Please try again.', loadGames),
+        createErrorBanner('Could not load games. Please try again.', () => load(filters)),
       );
       showSnackbar('Failed to load games.', 'error');
     }
   }
 
-  loadGames();
-
-  return section;
+  return { element: section, load, setCategories };
 }
