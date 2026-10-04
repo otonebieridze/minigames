@@ -8,11 +8,11 @@ import trophyIcon from '../../assets/icons/trophy.png';
 import recordIcon1 from '../../assets/icons/record-icon-1.png';
 import recordIcon2 from '../../assets/icons/record-icon-2.png';
 import recordIcon3 from '../../assets/icons/record-icon-3.png';
-import sendIcon from '../../assets/icons/send-comment-trigger.png';
 import { getGameDetails, type GameDetails } from '../../api/game-details';
 import { formatLikesCount } from '../../utils/format-likes-count';
 import { formatTimeAgo } from '../../utils/format-time-ago';
 import { createGameDetailsSkeleton } from './game-details-skeleton';
+import { createCommentsSection } from './game-comments';
 import { createErrorBanner } from '../error-banner/error-banner';
 import { createEmptyState } from '../empty-state/empty-state';
 import { showSnackbar } from '../snackbar/snackbar';
@@ -28,7 +28,6 @@ interface OpenGameDetailsEventDetail {
 }
 
 const recordIcons = [recordIcon1, recordIcon2, recordIcon3];
-const TEXTAREA_MAX_HEIGHT_PX = 88;
 const FAVORITE_ACTIVE_CLASS = 'game-details-dialog__favorite-btn--active';
 
 function createBadgesHtml(details: GameDetails): string {
@@ -88,21 +87,6 @@ function setupFavoriteButton(content: HTMLElement, isLiked: boolean): void {
   });
 }
 
-function setupCommentForm(content: HTMLElement): void {
-  const form = content.querySelector<HTMLFormElement>('.game-details-dialog__comment-form');
-  const input = content.querySelector<HTMLTextAreaElement>('.game-details-dialog__comment-input');
-
-  input?.addEventListener('input', () => {
-    input.style.height = 'auto';
-    const nextHeight = Math.min(input.scrollHeight, TEXTAREA_MAX_HEIGHT_PX);
-    input.style.height = `${nextHeight}px`;
-  });
-
-  form?.addEventListener('submit', (event) => {
-    event.preventDefault();
-  });
-}
-
 function createContent(details: GameDetails): HTMLElement[] {
   const hero = document.createElement('div');
   hero.className = 'game-details-dialog__hero';
@@ -148,24 +132,6 @@ function createContent(details: GameDetails): HTMLElement[] {
         ${createRecordsHtml(details)}
       </ul>
     </section>
-
-    <section class="game-details-dialog__comments">
-      <h3 class="game-details-dialog__comments-title">Comments</h3>
-
-      <form class="game-details-dialog__comment-form">
-        <div class="game-details-dialog__comment-avatar game-details-dialog__comment-avatar--user">U</div>
-        <textarea
-          class="game-details-dialog__comment-input"
-          placeholder="Write a comment..."
-          rows="1"
-        ></textarea>
-        <button type="submit" class="game-details-dialog__comment-submit" aria-label="Submit comment">
-          <img src="${sendIcon}" alt="" width="40" height="40" />
-        </button>
-      </form>
-
-      <ul class="game-details-dialog__comments-list"></ul>
-    </section>
   `;
 
   if (details.topRecords.length === 0) {
@@ -174,7 +140,7 @@ function createContent(details: GameDetails): HTMLElement[] {
   }
 
   setupFavoriteButton(content, details.isLikedByCurrentUser);
-  setupCommentForm(content);
+  content.append(createCommentsSection(details.slug));
 
   return [hero, content];
 }

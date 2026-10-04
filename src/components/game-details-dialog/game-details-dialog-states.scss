@@ -32,3 +32,19 @@
     width: 40%;
   }
 }
+
+.comments-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+}
+
+.comments-skeleton__item {
+  height: $size-12;
+  border: $border-width-medium solid $color-on-primary;
+  border-radius: $corner-large;
+}
+
+.game-details-dialog__comment-like.game-details-dialog__comment-like--readonly {
+  cursor: default;
+}
