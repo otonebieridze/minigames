@@ -49,7 +49,7 @@ function createList(games: Game[], categories: Category[]): HTMLUListElement {
 
     const detailsButton = item.querySelector<HTMLButtonElement>('.game-card__details-btn');
     detailsButton?.addEventListener('click', () => {
-      document.dispatchEvent(new CustomEvent('open-game-details'));
+      document.dispatchEvent(new CustomEvent('open-game-details', { detail: { slug: game.slug } }));
     });
 
     list.append(item);

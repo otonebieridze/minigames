@@ -1,4 +1,5 @@
 import './game-details-dialog.scss';
+import './game-details-dialog-states.scss';
 import closeIcon from '../../assets/icons/close.png';
 import starIcon from '../../assets/icons/star.png';
 import favoriteIcon from '../../assets/icons/favorite.png';
@@ -7,27 +8,141 @@ import trophyIcon from '../../assets/icons/trophy.png';
 import recordIcon1 from '../../assets/icons/record-icon-1.png';
 import recordIcon2 from '../../assets/icons/record-icon-2.png';
 import recordIcon3 from '../../assets/icons/record-icon-3.png';
-import sendIcon from '../../assets/icons/send-comment-trigger.png';
-import { gameDetailsMock } from '../../data/game-details-mock';
+import { getGameDetails, type GameDetails } from '../../api/game-details';
+import { formatLikesCount } from '../../utils/format-likes-count';
+import { formatTimeAgo } from '../../utils/format-time-ago';
+import { createGameDetailsSkeleton } from './game-details-skeleton';
+import { createCommentsSection } from './game-comments';
+import { createErrorBanner } from '../error-banner/error-banner';
+import { createEmptyState } from '../empty-state/empty-state';
+import { showSnackbar } from '../snackbar/snackbar';
 
 interface GameDetailsDialog {
   element: HTMLElement;
-  open: () => void;
+  open: (slug: string) => void;
   close: () => void;
 }
 
-interface CommentLikeReference {
-  button: HTMLButtonElement;
-  icon: HTMLImageElement;
-  initialLiked: boolean;
+interface OpenGameDetailsEventDetail {
+  slug: string;
 }
 
 const recordIcons = [recordIcon1, recordIcon2, recordIcon3];
-const AVATAR_COLORS = ['blue', 'yellow', 'gray'] as const;
-const TEXTAREA_MAX_HEIGHT_PX = 88;
+const FAVORITE_ACTIVE_CLASS = 'game-details-dialog__favorite-btn--active';
 
-function getAvatarColor(index: number): string {
-  return AVATAR_COLORS[index % AVATAR_COLORS.length];
+function createBadgesHtml(details: GameDetails): string {
+  const badges = [
+    { label: 'Genre', value: details.specs.genre },
+    { label: 'Players', value: details.specs.players },
+    { label: 'Duration', value: details.specs.duration },
+    { label: 'Price', value: details.specs.price },
+  ];
+
+  return badges
+    .map(
+      (badge) => `
+        <div class="game-details-dialog__badge">
+          <span class="game-details-dialog__badge-label">${badge.label}</span>
+          <span class="game-details-dialog__badge-value">${badge.value}</span>
+        </div>
+      `,
+    )
+    .join('');
+}
+
+function createRecordsHtml(details: GameDetails): string {
+  return details.topRecords
+    .map(
+      (record, index) => `
+        <li class="game-details-dialog__record">
+          <div class="game-details-dialog__record-left">
+            <img src="${recordIcons[index]}" alt="" class="game-details-dialog__record-icon" width="20" height="20" />
+            <span class="game-details-dialog__record-player">${record.playerName}</span>
+          </div>
+          <div class="game-details-dialog__record-right">
+            <span class="game-details-dialog__record-score">${record.score}</span>
+            <span class="game-details-dialog__record-time">${formatTimeAgo(record.achievedAt)}</span>
+          </div>
+        </li>
+      `,
+    )
+    .join('');
+}
+
+function setupFavoriteButton(content: HTMLElement, isLiked: boolean): void {
+  const button = content.querySelector<HTMLButtonElement>('.game-details-dialog__favorite-btn');
+  const text = content.querySelector<HTMLElement>('.game-details-dialog__favorite-text');
+  if (!button || !text) return;
+
+  const setFavorite = (isActive: boolean): void => {
+    button.classList.toggle(FAVORITE_ACTIVE_CLASS, isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+    text.textContent = isActive ? 'Added to Favorites' : 'Add to Favorites';
+  };
+
+  setFavorite(isLiked);
+
+  button.addEventListener('click', () => {
+    setFavorite(!button.classList.contains(FAVORITE_ACTIVE_CLASS));
+  });
+}
+
+function createContent(details: GameDetails): HTMLElement[] {
+  const hero = document.createElement('div');
+  hero.className = 'game-details-dialog__hero';
+  hero.innerHTML = `
+    <img src="${details.heroImage}" alt="${details.name}" class="game-details-dialog__cover" />
+  `;
+
+  const content = document.createElement('div');
+  content.className = 'game-details-dialog__content';
+  content.innerHTML = `
+    <div class="game-details-dialog__title-row">
+      <h2 class="game-details-dialog__title">${details.name}</h2>
+      <span class="game-details-dialog__rating">
+        <img src="${starIcon}" alt="" width="24" height="24" />
+        ${details.rating}
+      </span>
+      <span class="game-details-dialog__likes">
+        <img src="${favoriteIcon}" alt="" width="24" height="24" />
+        ${formatLikesCount(details.likesCount)}
+      </span>
+    </div>
+
+    <p class="game-details-dialog__description">${details.fullDescription}</p>
+
+    <div class="game-details-dialog__badges">
+      ${createBadgesHtml(details)}
+    </div>
+
+    <div class="game-details-dialog__actions">
+      <button type="button" class="game-details-dialog__play-btn">Play Now</button>
+      <button type="button" class="game-details-dialog__favorite-btn" aria-pressed="false">
+        <img src="${favoriteIconBlack}" alt="" width="18" height="18" />
+        <span class="game-details-dialog__favorite-text">Add to Favorites</span>
+      </button>
+    </div>
+
+    <section class="game-details-dialog__records">
+      <h3 class="game-details-dialog__records-title">
+        <img src="${trophyIcon}" alt="" width="20" height="20" />
+        Top Records
+      </h3>
+      <ul class="game-details-dialog__records-list">
+        ${createRecordsHtml(details)}
+      </ul>
+    </section>
+  `;
+
+  if (details.topRecords.length === 0) {
+    const recordsList = content.querySelector('.game-details-dialog__records-list');
+    recordsList?.replaceWith(createEmptyState('No records yet.'));
+  }
+
+  setupFavoriteButton(content, details.isLikedByCurrentUser);
+  content.append(createCommentsSection(details.slug));
+
+  return [hero, content];
 }
 
 export function createGameDetailsDialog(): GameDetailsDialog {
@@ -40,218 +155,39 @@ export function createGameDetailsDialog(): GameDetailsDialog {
   dialog.setAttribute('aria-modal', 'true');
   dialog.setAttribute('aria-label', 'Game details');
 
-  const badgesHtml = gameDetailsMock.badges
-    .map(
-      (badge) => `
-        <div class="game-details-dialog__badge">
-          <span class="game-details-dialog__badge-label">${badge.label}</span>
-          <span class="game-details-dialog__badge-value">${badge.value}</span>
-        </div>
-      `,
-    )
-    .join('');
+  const body = document.createElement('div');
+  body.className = 'game-details-dialog__body';
 
-  const recordsHtml = gameDetailsMock.topRecords
-    .map(
-      (record, index) => `
-        <li class="game-details-dialog__record">
-          <div class="game-details-dialog__record-left">
-            <img src="${recordIcons[index]}" alt="" class="game-details-dialog__record-icon" width="20" height="20" />
-            <span class="game-details-dialog__record-player">${record.playerName}</span>
-          </div>
-          <div class="game-details-dialog__record-right">
-            <span class="game-details-dialog__record-score">${record.score}</span>
-            <span class="game-details-dialog__record-time">${record.timeAgo}</span>
-          </div>
-        </li>
-      `,
-    )
-    .join('');
+  const closeButton = document.createElement('button');
+  closeButton.type = 'button';
+  closeButton.className = 'game-details-dialog__close';
+  closeButton.setAttribute('aria-label', 'Close dialog');
+  closeButton.innerHTML = `<img src="${closeIcon}" alt="" width="16" height="16" />`;
 
-  const commentsHtml = gameDetailsMock.comments
-    .map((comment, index) => {
-      const avatarColor = getAvatarColor(index);
-      const avatarInitial = comment.authorName.charAt(0).toUpperCase();
-      const likeIcon = comment.isLikedByCurrentUser ? favoriteIcon : favoriteIconBlack;
-
-      return `
-        <li class="game-details-dialog__comment">
-          <div class="game-details-dialog__comment-header">
-            <div class="game-details-dialog__comment-header-left">
-              <div class="game-details-dialog__comment-avatar game-details-dialog__comment-avatar--${avatarColor}">
-                ${avatarInitial}
-              </div>
-              <span class="game-details-dialog__comment-author">${comment.authorName}</span>
-            </div>
-            <span class="game-details-dialog__comment-time">${comment.timeAgo}</span>
-          </div>
-          <p class="game-details-dialog__comment-text">${comment.text}</p>
-          <button
-            type="button"
-            class="game-details-dialog__comment-like"
-            data-comment-id="${comment.commentId}"
-            aria-pressed="${comment.isLikedByCurrentUser}"
-          >
-            <img src="${likeIcon}" alt="" class="game-details-dialog__comment-like-icon" width="16" height="16" />
-            <span class="game-details-dialog__comment-like-count">${comment.likesCount}</span>
-          </button>
-        </li>
-      `;
-    })
-    .join('');
-
-  dialog.innerHTML = `
-    <div class="game-details-dialog__hero">
-      <img src="${gameDetailsMock.coverImage}" alt="${gameDetailsMock.title}" class="game-details-dialog__cover" />
-      <button type="button" class="game-details-dialog__close" aria-label="Close dialog">
-        <img src="${closeIcon}" alt="" width="16" height="16" />
-      </button>
-    </div>
-
-    <div class="game-details-dialog__content">
-      <div class="game-details-dialog__title-row">
-        <h2 class="game-details-dialog__title">${gameDetailsMock.title}</h2>
-        <span class="game-details-dialog__rating">
-          <img src="${starIcon}" alt="" width="24" height="24" />
-          ${gameDetailsMock.rating}
-        </span>
-        <span class="game-details-dialog__likes">
-          <img src="${favoriteIcon}" alt="" width="24" height="24" />
-          ${gameDetailsMock.likesCount}
-        </span>
-      </div>
-
-      <p class="game-details-dialog__description">${gameDetailsMock.description}</p>
-
-      <div class="game-details-dialog__badges">
-        ${badgesHtml}
-      </div>
-
-      <div class="game-details-dialog__actions">
-        <button type="button" class="game-details-dialog__play-btn">Play Now</button>
-        <button type="button" class="game-details-dialog__favorite-btn" aria-pressed="false">
-          <img src="${favoriteIconBlack}" alt="" width="18" height="18" />
-          <span class="game-details-dialog__favorite-text">Add to Favorites</span>
-        </button>
-      </div>
-
-      <section class="game-details-dialog__records">
-        <h3 class="game-details-dialog__records-title">
-          <img src="${trophyIcon}" alt="" width="20" height="20" />
-          Top Records
-        </h3>
-        <ul class="game-details-dialog__records-list">
-          ${recordsHtml}
-        </ul>
-      </section>
-
-      <section class="game-details-dialog__comments">
-        <h3 class="game-details-dialog__comments-title">Comments (${gameDetailsMock.comments.length})</h3>
-
-        <form class="game-details-dialog__comment-form">
-          <div class="game-details-dialog__comment-avatar game-details-dialog__comment-avatar--user">U</div>
-          <textarea
-            class="game-details-dialog__comment-input"
-            placeholder="Write a comment..."
-            rows="1"
-          ></textarea>
-          <button type="submit" class="game-details-dialog__comment-submit" aria-label="Submit comment">
-            <img src="${sendIcon}" alt="" width="40" height="40" />
-          </button>
-        </form>
-
-        <ul class="game-details-dialog__comments-list">
-          ${commentsHtml}
-        </ul>
-      </section>
-    </div>
-  `;
-
+  dialog.append(body, closeButton);
   backdrop.append(dialog);
 
-  const favoriteButton = dialog.querySelector<HTMLButtonElement>(
-    '.game-details-dialog__favorite-btn',
-  );
-  const favoriteText = dialog.querySelector<HTMLElement>('.game-details-dialog__favorite-text');
+  async function loadDetails(slug: string): Promise<void> {
+    body.replaceChildren(createGameDetailsSkeleton());
 
-  function resetFavoriteState(): void {
-    favoriteButton?.classList.remove('game-details-dialog__favorite-btn--active');
-    favoriteButton?.setAttribute('aria-pressed', 'false');
-    if (favoriteText) {
-      favoriteText.textContent = 'Add to Favorites';
+    try {
+      const details = await getGameDetails(slug);
+      body.replaceChildren(...createContent(details));
+    } catch {
+      const state = document.createElement('div');
+      state.className = 'game-details-dialog__state';
+      state.append(
+        createErrorBanner('Could not load game details. Please try again.', () =>
+          loadDetails(slug),
+        ),
+      );
+      body.replaceChildren(state);
+      showSnackbar('Failed to load game details.', 'error');
     }
   }
 
-  favoriteButton?.addEventListener('click', () => {
-    const isActive = favoriteButton.classList.toggle('game-details-dialog__favorite-btn--active');
-    favoriteButton.setAttribute('aria-pressed', String(isActive));
-    if (favoriteText) {
-      favoriteText.textContent = isActive ? 'Added to Favorites' : 'Add to Favorites';
-    }
-  });
-
-  const commentLikeReferences: CommentLikeReference[] = [];
-  const likeButtons = dialog.querySelectorAll<HTMLButtonElement>(
-    '.game-details-dialog__comment-like',
-  );
-
-  for (const likeButton of likeButtons) {
-    const commentId = likeButton.dataset.commentId;
-    const comment = gameDetailsMock.comments.find((item) => item.commentId === commentId);
-    const icon = likeButton.querySelector<HTMLImageElement>(
-      '.game-details-dialog__comment-like-icon',
-    );
-
-    if (!comment || !icon) {
-      continue;
-    }
-
-    commentLikeReferences.push({
-      button: likeButton,
-      icon,
-      initialLiked: comment.isLikedByCurrentUser,
-    });
-
-    likeButton.addEventListener('click', () => {
-      const isActive = likeButton.getAttribute('aria-pressed') === 'true';
-      const isActiveNext = !isActive;
-      likeButton.setAttribute('aria-pressed', String(isActiveNext));
-      icon.src = isActiveNext ? favoriteIcon : favoriteIconBlack;
-    });
-  }
-
-  function resetCommentLikes(): void {
-    for (const reference of commentLikeReferences) {
-      reference.button.setAttribute('aria-pressed', String(reference.initialLiked));
-      reference.icon.src = reference.initialLiked ? favoriteIcon : favoriteIconBlack;
-    }
-  }
-
-  const commentForm = dialog.querySelector<HTMLFormElement>('.game-details-dialog__comment-form');
-  const commentInput = dialog.querySelector<HTMLTextAreaElement>(
-    '.game-details-dialog__comment-input',
-  );
-
-  function resetCommentInput(): void {
-    if (!commentInput) return;
-    commentInput.value = '';
-    commentInput.style.height = '';
-  }
-
-  commentInput?.addEventListener('input', () => {
-    commentInput.style.height = 'auto';
-    const nextHeight = Math.min(commentInput.scrollHeight, TEXTAREA_MAX_HEIGHT_PX);
-    commentInput.style.height = `${nextHeight}px`;
-  });
-
-  commentForm?.addEventListener('submit', (event) => {
-    event.preventDefault();
-  });
-
-  function open(): void {
-    resetFavoriteState();
-    resetCommentLikes();
-    resetCommentInput();
+  function open(slug: string): void {
+    loadDetails(slug);
     backdrop.classList.add('game-details-backdrop--open');
     document.body.style.overflow = 'hidden';
   }
@@ -261,8 +197,7 @@ export function createGameDetailsDialog(): GameDetailsDialog {
     document.body.style.overflow = '';
   }
 
-  const closeButton = dialog.querySelector<HTMLButtonElement>('.game-details-dialog__close');
-  closeButton?.addEventListener('click', close);
+  closeButton.addEventListener('click', close);
 
   backdrop.addEventListener('click', (event) => {
     if (event.target === backdrop) {
@@ -276,7 +211,10 @@ export function createGameDetailsDialog(): GameDetailsDialog {
     }
   });
 
-  document.addEventListener('open-game-details', open);
+  document.addEventListener('open-game-details', (event) => {
+    const { slug } = (event as CustomEvent<OpenGameDetailsEventDetail>).detail;
+    open(slug);
+  });
 
   return { element: backdrop, open, close };
 }
