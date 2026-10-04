@@ -1,23 +1,44 @@
 import './library-filter-sort.scss';
 import arrowDropDownIcon from '../../assets/icons/arrow_drop_down.png';
-import { categories } from '../../data/categories';
+import { getCategories, type Category } from '../../api/categories';
+import { createChipsSkeleton } from './library-chips-skeleton';
+import { createErrorBanner } from '../../components/error-banner/error-banner';
+import { createEmptyState } from '../../components/empty-state/empty-state';
+import { showSnackbar } from '../../components/snackbar/snackbar';
 
 const sortOptions: string[] = ['Rating', 'Popularity', 'Newest', 'Price: Low to High'];
+const ACTIVE_CHIP_CLASS = 'library-filter-sort__chip--active';
+
+function createChips(categories: Category[]): HTMLButtonElement[] {
+  const chips = categories.map((category) => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'library-filter-sort__chip';
+    chip.dataset.slug = category.slug;
+    chip.textContent = category.label;
+
+    if (category.isDefault) {
+      chip.classList.add(ACTIVE_CHIP_CLASS);
+    }
+
+    return chip;
+  });
+
+  for (const chip of chips) {
+    chip.addEventListener('click', () => {
+      for (const otherChip of chips) {
+        otherChip.classList.remove(ACTIVE_CHIP_CLASS);
+      }
+      chip.classList.add(ACTIVE_CHIP_CLASS);
+    });
+  }
+
+  return chips;
+}
 
 export function renderLibraryFilterSort(): HTMLElement {
   const section = document.createElement('div');
   section.className = 'library-filter-sort';
-
-  const chipsHtml = categories
-    .map((category) => {
-      const activeClass = category.isDefault ? ' library-filter-sort__chip--active' : '';
-      return `
-        <button type="button" class="library-filter-sort__chip${activeClass}" data-slug="${category.slug}">
-          ${category.label}
-        </button>
-      `;
-    })
-    .join('');
 
   const sortOptionsHtml = sortOptions
     .map((option, index) => {
@@ -33,10 +54,6 @@ export function renderLibraryFilterSort(): HTMLElement {
     .join('');
 
   section.innerHTML = `
-    <div class="library-filter-sort__chips">
-      ${chipsHtml}
-    </div>
-
     <div class="library-filter-sort__sort">
       <button type="button" class="library-filter-sort__sort-toggle" aria-expanded="false">
         <span class="library-filter-sort__sort-label">Sort by: ${sortOptions[0]} ↓</span>
@@ -48,15 +65,31 @@ export function renderLibraryFilterSort(): HTMLElement {
     </div>
   `;
 
-  const chipButtons = section.querySelectorAll<HTMLButtonElement>('.library-filter-sort__chip');
-  for (const chip of chipButtons) {
-    chip.addEventListener('click', () => {
-      for (const otherChip of chipButtons) {
-        otherChip.classList.remove('library-filter-sort__chip--active');
+  const chipsContainer = document.createElement('div');
+  chipsContainer.className = 'library-filter-sort__chips';
+  section.prepend(chipsContainer);
+
+  async function loadCategories(): Promise<void> {
+    chipsContainer.replaceChildren(...createChipsSkeleton());
+
+    try {
+      const categories = await getCategories();
+
+      if (categories.length === 0) {
+        chipsContainer.replaceChildren(createEmptyState('No categories found.'));
+        return;
       }
-      chip.classList.add('library-filter-sort__chip--active');
-    });
+
+      chipsContainer.replaceChildren(...createChips(categories));
+    } catch {
+      chipsContainer.replaceChildren(
+        createErrorBanner('Could not load categories. Please try again.', loadCategories),
+      );
+      showSnackbar('Failed to load categories.', 'error');
+    }
   }
+
+  loadCategories();
 
   const sortWrapper = section.querySelector<HTMLElement>('.library-filter-sort__sort');
   const sortToggle = section.querySelector<HTMLButtonElement>('.library-filter-sort__sort-toggle');
