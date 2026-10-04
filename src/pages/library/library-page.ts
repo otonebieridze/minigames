@@ -19,6 +19,7 @@ export function renderLibraryPage(container: HTMLElement): void {
   container.append(
     renderLibraryTitle(),
     renderLibraryFilterSort({
+      onCategoriesLoaded: gameCards.setCategories,
       onDefaultCategory: loadWithCategory,
       onCategoryChange: loadWithCategory,
       onCategoriesFailed: () => loadWithCategory(FALLBACK_CATEGORY),

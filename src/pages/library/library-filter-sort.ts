@@ -10,6 +10,7 @@ const sortOptions: string[] = ['Rating', 'Popularity', 'Newest', 'Price: Low to 
 const ACTIVE_CHIP_CLASS = 'library-filter-sort__chip--active';
 
 interface FilterSortHandlers {
+  onCategoriesLoaded: (categories: Category[]) => void;
   onDefaultCategory: (slug: string) => void;
   onCategoryChange: (slug: string) => void;
   onCategoriesFailed: () => void;
@@ -94,6 +95,7 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
       chipsContainer.replaceChildren(...createChips(categories, handlers.onCategoryChange));
 
       const defaultCategory = categories.find((category) => category.isDefault);
+      handlers.onCategoriesLoaded(categories);
       handlers.onDefaultCategory(defaultCategory ? defaultCategory.slug : categories[0].slug);
     } catch {
       chipsContainer.replaceChildren(
