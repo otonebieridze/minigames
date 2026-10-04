@@ -1,23 +1,35 @@
 import { renderLibraryTitle } from './library-title';
 import { renderLibraryFilterSort, DEFAULT_SORT } from './library-filter-sort';
 import { createLibraryGameCards } from './library-game-cards';
-import { renderLibraryPagination } from './library-pagination';
+import { createLibraryPagination } from './library-pagination';
 import type { GameFilters } from '../../api/games';
 
 const FALLBACK_CATEGORY = 'all';
+const FIRST_PAGE = 1;
 
 export function renderLibraryPage(container: HTMLElement): void {
-  const filters: GameFilters = { category: FALLBACK_CATEGORY, sort: DEFAULT_SORT };
-  const gameCards = createLibraryGameCards();
+  const filters: GameFilters = {
+    category: FALLBACK_CATEGORY,
+    sort: DEFAULT_SORT,
+    page: FIRST_PAGE,
+  };
+
+  const pagination = createLibraryPagination(loadWithPage);
+  const gameCards = createLibraryGameCards(pagination.update);
+
+  function loadWithPage(page: number): void {
+    filters.page = page;
+    gameCards.load(filters);
+  }
 
   function loadWithCategory(slug: string): void {
     filters.category = slug;
-    gameCards.load(filters);
+    loadWithPage(FIRST_PAGE);
   }
 
   function loadWithSort(sort: string): void {
     filters.sort = sort;
-    gameCards.load(filters);
+    loadWithPage(FIRST_PAGE);
   }
 
   container.className = 'library-page';
@@ -31,6 +43,6 @@ export function renderLibraryPage(container: HTMLElement): void {
       onSortChange: loadWithSort,
     }),
     gameCards.element,
-    renderLibraryPagination(),
+    pagination.element,
   );
 }
