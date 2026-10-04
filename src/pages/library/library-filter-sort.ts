@@ -6,8 +6,22 @@ import { createErrorBanner } from '../../components/error-banner/error-banner';
 import { createEmptyState } from '../../components/empty-state/empty-state';
 import { showSnackbar } from '../../components/snackbar/snackbar';
 
-const sortOptions: string[] = ['Rating', 'Popularity', 'Newest', 'Price: Low to High'];
+interface SortOption {
+  value: string;
+  label: string;
+}
+
+const sortOptions: SortOption[] = [
+  { value: 'rating-desc', label: 'Rating ↓' },
+  { value: 'rating-asc', label: 'Rating ↑' },
+  { value: 'name-asc', label: 'Name A-Z' },
+  { value: 'name-desc', label: 'Name Z-A' },
+];
+
+export const DEFAULT_SORT = sortOptions[0].value;
+
 const ACTIVE_CHIP_CLASS = 'library-filter-sort__chip--active';
+const ACTIVE_SORT_OPTION_CLASS = 'library-filter-sort__sort-option--active';
 
 interface FilterSortHandlers {
   onCategoriesLoaded: (categories: Category[]) => void;
@@ -52,12 +66,12 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
   section.className = 'library-filter-sort';
 
   const sortOptionsHtml = sortOptions
-    .map((option, index) => {
-      const activeClass = index === 0 ? ' library-filter-sort__sort-option--active' : '';
+    .map((option) => {
+      const activeClass = option.value === DEFAULT_SORT ? ` ${ACTIVE_SORT_OPTION_CLASS}` : '';
       return `
         <li>
-          <button type="button" class="library-filter-sort__sort-option${activeClass}" data-value="${option}">
-            ${option}
+          <button type="button" class="library-filter-sort__sort-option${activeClass}" data-value="${option.value}" data-label="${option.label}">
+            ${option.label}
           </button>
         </li>
       `;
@@ -67,7 +81,7 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
   section.innerHTML = `
     <div class="library-filter-sort__sort">
       <button type="button" class="library-filter-sort__sort-toggle" aria-expanded="false">
-        <span class="library-filter-sort__sort-label">Sort by: ${sortOptions[0]} ↓</span>
+        <span class="library-filter-sort__sort-label">Sort by: ${sortOptions[0].label}</span>
         <img src="${arrowDropDownIcon}" alt="" class="library-filter-sort__sort-caret" width="20" height="20" />
       </button>
       <ul class="library-filter-sort__sort-list">
@@ -128,12 +142,12 @@ export function renderLibraryFilterSort(handlers: FilterSortHandlers): HTMLEleme
   for (const optionButton of sortOptionButtons) {
     optionButton.addEventListener('click', () => {
       if (sortLabel) {
-        sortLabel.textContent = `Sort by: ${optionButton.dataset.value} ↓`;
+        sortLabel.textContent = `Sort by: ${optionButton.dataset.label}`;
       }
       for (const otherOption of sortOptionButtons) {
-        otherOption.classList.remove('library-filter-sort__sort-option--active');
+        otherOption.classList.remove(ACTIVE_SORT_OPTION_CLASS);
       }
-      optionButton.classList.add('library-filter-sort__sort-option--active');
+      optionButton.classList.add(ACTIVE_SORT_OPTION_CLASS);
       closeSortList();
     });
   }
