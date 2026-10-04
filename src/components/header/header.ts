@@ -4,6 +4,7 @@ import hamburgerIcon from '../../assets/icons/hamburger.png';
 import { createMobileNav } from '../mobile-nav/mobile-nav';
 import { createAuthDialog } from '../auth-dialog/auth-dialog';
 import { getCurrentPath } from '../../app/navigation';
+import { onUrlChange } from '../../app/router';
 
 export function renderHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -11,17 +12,17 @@ export function renderHeader(): HTMLElement {
 
   header.innerHTML = `
     <div class="header__inner">
-      <a href="#/" class="header__logo">
+      <a href="/" class="header__logo">
         <img src="${logoIcon}" alt="" class="header__logo-icon" width="32" height="32" />
         <span class="header__logo-text">MiniGames</span>
       </a>
 
       <div class="header__right">
         <nav class="header__nav" aria-label="Main navigation">
-          <a href="#/" class="header__nav-link" data-path="/">Home</a>
-          <a href="#/library" class="header__nav-link" data-path="/library">Library</a>
-          <a href="#/" class="header__nav-link">Tournaments</a>
-          <a href="#/" class="header__nav-link">Community</a>
+          <a href="/" class="header__nav-link" data-path="/">Home</a>
+          <a href="/library" class="header__nav-link" data-path="/library">Library</a>
+          <a href="/" class="header__nav-link">Tournaments</a>
+          <a href="/" class="header__nav-link">Community</a>
         </nav>
 
         <div class="header__actions">
@@ -74,7 +75,7 @@ export function renderHeader(): HTMLElement {
   }
 
   updateActiveLink();
-  globalThis.addEventListener('hashchange', updateActiveLink);
+  onUrlChange(updateActiveLink);
 
   return header;
 }

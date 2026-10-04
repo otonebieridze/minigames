@@ -1,6 +1,7 @@
 import './mobile-nav.scss';
 import logoIcon from '../../assets/icons/logo.png';
 import { getCurrentPath } from '../../app/navigation';
+import { onUrlChange } from '../../app/router';
 
 interface MobileNav {
   element: HTMLElement;
@@ -17,7 +18,7 @@ export function createMobileNav(): MobileNav {
 
   nav.innerHTML = `
     <div class="mobile-nav__top">
-      <a href="#/" class="mobile-nav__logo">
+      <a href="/" class="mobile-nav__logo">
         <img src="${logoIcon}" alt="" width="32" height="32" />
         <span>MiniGames</span>
       </a>
@@ -25,10 +26,10 @@ export function createMobileNav(): MobileNav {
     </div>
 
     <nav class="mobile-nav__links" aria-label="Mobile navigation links">
-      <a href="#/" class="mobile-nav__link" data-path="/">Home</a>
-      <a href="#/library" class="mobile-nav__link" data-path="/library">Library</a>
-      <a href="#/" class="mobile-nav__link">Tournaments</a>
-      <a href="#/" class="mobile-nav__link">Community</a>
+      <a href="/" class="mobile-nav__link" data-path="/">Home</a>
+      <a href="/library" class="mobile-nav__link" data-path="/library">Library</a>
+      <a href="/" class="mobile-nav__link">Tournaments</a>
+      <a href="/" class="mobile-nav__link">Community</a>
     </nav>
 
     <div class="mobile-nav__actions">
@@ -70,7 +71,7 @@ export function createMobileNav(): MobileNav {
   }
 
   updateActiveLink();
-  globalThis.addEventListener('hashchange', () => {
+  onUrlChange(() => {
     updateActiveLink();
     close();
   });

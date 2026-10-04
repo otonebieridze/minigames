@@ -60,7 +60,7 @@ export function createAuthDialog(): AuthDialog {
             </span>
           </label>
 
-          <a href="#/" class="auth-dialog__forgot">Forgot Password?</a>
+          <a href="/" class="auth-dialog__forgot">Forgot Password?</a>
           <button type="submit" class="auth-dialog__submit">Login</button>
         </form>
 
