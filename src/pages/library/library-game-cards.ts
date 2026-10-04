@@ -58,7 +58,9 @@ function createList(games: Game[], categories: Category[]): HTMLUListElement {
   return list;
 }
 
-export function createLibraryGameCards(): LibraryGameCards {
+export function createLibraryGameCards(
+  onPaginationData: (page: number, totalPages: number) => void,
+): LibraryGameCards {
   const section = document.createElement('section');
   section.className = 'library-game-cards';
 
@@ -72,7 +74,8 @@ export function createLibraryGameCards(): LibraryGameCards {
     section.replaceChildren(createGameCardsSkeleton());
 
     try {
-      const { games } = await getGames(filters, GAMES_PER_PAGE);
+      const { games, page, totalPages } = await getGames(filters, GAMES_PER_PAGE);
+      onPaginationData(page, totalPages);
 
       if (games.length === 0) {
         section.replaceChildren(createEmptyState('No games found.'));
