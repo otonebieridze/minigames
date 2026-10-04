@@ -58,7 +58,7 @@ function createTrack(section: HTMLElement, games: Game[]): HTMLUListElement {
 
     item.addEventListener('click', () => {
       if (shouldSuppressClick) return;
-      document.dispatchEvent(new CustomEvent('open-game-details'));
+      document.dispatchEvent(new CustomEvent('open-game-details', { detail: { slug: game.slug } }));
     });
 
     track.append(item);
