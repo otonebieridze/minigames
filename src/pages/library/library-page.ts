@@ -5,9 +5,14 @@ import { renderLibraryPagination } from './library-pagination';
 import type { GameFilters } from '../../api/games';
 
 const FALLBACK_CATEGORY = 'all';
+const FIRST_PAGE = 1;
 
 export function renderLibraryPage(container: HTMLElement): void {
-  const filters: GameFilters = { category: FALLBACK_CATEGORY, sort: DEFAULT_SORT };
+  const filters: GameFilters = {
+    category: FALLBACK_CATEGORY,
+    sort: DEFAULT_SORT,
+    page: FIRST_PAGE,
+  };
   const gameCards = createLibraryGameCards();
 
   function loadWithCategory(slug: string): void {

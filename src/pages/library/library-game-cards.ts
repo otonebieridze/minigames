@@ -72,7 +72,7 @@ export function createLibraryGameCards(): LibraryGameCards {
     section.replaceChildren(createGameCardsSkeleton());
 
     try {
-      const games = await getGames(filters, GAMES_PER_PAGE);
+      const { games } = await getGames(filters, GAMES_PER_PAGE);
 
       if (games.length === 0) {
         section.replaceChildren(createEmptyState('No games found.'));
