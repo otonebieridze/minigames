@@ -6,6 +6,7 @@ import { createGameCardsSkeleton } from './library-game-cards-skeleton';
 import { createErrorBanner } from '../../components/error-banner/error-banner';
 import { createEmptyState } from '../../components/empty-state/empty-state';
 import { showSnackbar } from '../../components/snackbar/snackbar';
+import { setUrlParameter } from '../../app/url-parameters';
 
 const GAMES_PER_PAGE = 6;
 
@@ -49,7 +50,7 @@ function createList(games: Game[], categories: Category[]): HTMLUListElement {
 
     const detailsButton = item.querySelector<HTMLButtonElement>('.game-card__details-btn');
     detailsButton?.addEventListener('click', () => {
-      document.dispatchEvent(new CustomEvent('open-game-details', { detail: { slug: game.slug } }));
+      setUrlParameter('game', game.slug);
     });
 
     list.append(item);

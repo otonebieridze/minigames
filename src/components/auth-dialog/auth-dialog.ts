@@ -4,14 +4,24 @@ import lockIcon from '../../assets/icons/lock.png';
 import personIcon from '../../assets/icons/person.png';
 import visibilityIcon from '../../assets/icons/visibility.png';
 import googleIcon from '../../assets/icons/google.png';
+import { onUrlChange } from '../../app/router';
+import { getUrlParameter, setUrlParameter } from '../../app/url-parameters';
 
 interface AuthDialog {
   element: HTMLElement;
-  open: (tab?: AuthTab) => void;
-  close: () => void;
 }
 
 type AuthTab = 'login' | 'register';
+
+const AUTH_PARAMETER = 'auth';
+
+function isAuthTab(value: string | undefined): value is AuthTab {
+  return value === 'login' || value === 'register';
+}
+
+function requestClose(): void {
+  setUrlParameter(AUTH_PARAMETER, undefined);
+}
 
 export function createAuthDialog(): AuthDialog {
   const backdrop = document.createElement('div');
@@ -171,7 +181,7 @@ export function createAuthDialog(): AuthDialog {
   for (const tabButton of tabButtons) {
     tabButton.addEventListener('click', () => {
       if (tabButton.dataset.tab === 'login' || tabButton.dataset.tab === 'register') {
-        switchTo(tabButton.dataset.tab);
+        setUrlParameter(AUTH_PARAMETER, tabButton.dataset.tab);
       }
     });
   }
@@ -180,7 +190,7 @@ export function createAuthDialog(): AuthDialog {
   for (const link of switchLinks) {
     link.addEventListener('click', () => {
       if (link.dataset.switchTo === 'login' || link.dataset.switchTo === 'register') {
-        switchTo(link.dataset.switchTo);
+        setUrlParameter(AUTH_PARAMETER, link.dataset.switchTo);
       }
     });
   }
@@ -208,26 +218,31 @@ export function createAuthDialog(): AuthDialog {
     });
   }
 
-  function open(tab: AuthTab = 'login'): void {
-    switchTo(tab);
-    backdrop.classList.add('auth-backdrop--open');
-  }
+  function syncWithUrl(): void {
+    const tab = getUrlParameter(AUTH_PARAMETER);
 
-  function close(): void {
-    backdrop.classList.remove('auth-backdrop--open');
+    if (isAuthTab(tab)) {
+      switchTo(tab);
+      backdrop.classList.add('auth-backdrop--open');
+    } else {
+      backdrop.classList.remove('auth-backdrop--open');
+    }
   }
 
   backdrop.addEventListener('click', (event) => {
     if (event.target === backdrop) {
-      close();
+      requestClose();
     }
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
-      close();
+      requestClose();
     }
   });
 
-  return { element: backdrop, open, close };
+  onUrlChange(syncWithUrl);
+  syncWithUrl();
+
+  return { element: backdrop };
 }

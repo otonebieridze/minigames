@@ -9,6 +9,7 @@ import { createCarouselSkeleton } from './carousel-skeleton';
 import { createErrorBanner } from '../error-banner/error-banner';
 import { createEmptyState } from '../empty-state/empty-state';
 import { showSnackbar } from '../snackbar/snackbar';
+import { setUrlParameter } from '../../app/url-parameters';
 
 const AUTOPLAY_INTERVAL_MS = 4000;
 const SWIPE_THRESHOLD_PX = 40;
@@ -58,7 +59,7 @@ function createTrack(section: HTMLElement, games: Game[]): HTMLUListElement {
 
     item.addEventListener('click', () => {
       if (shouldSuppressClick) return;
-      document.dispatchEvent(new CustomEvent('open-game-details', { detail: { slug: game.slug } }));
+      setUrlParameter('game', game.slug);
     });
 
     track.append(item);
