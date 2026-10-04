@@ -6,7 +6,7 @@
   flex-direction: column;
 
   background-color: $color-white;
-  border: 2.5px solid $color-on-primary;
+  border: $border-width-thick solid $color-on-primary;
   border-radius: $corner-large;
   box-shadow: $shadow-level-1;
   overflow: hidden;
@@ -17,14 +17,14 @@
 }
 
 .leaderboard-skeleton__row {
-  height: 56px;
+  height: $size-7;
 
   &:not(:last-child) {
-    border-bottom: 1px solid $color-outline;
+    border-bottom: $border-width-thin solid $color-outline;
   }
 
   @include desktop-up {
-    height: 64px;
+    height: $size-8;
   }
 
   &:nth-child(n + 5) {
